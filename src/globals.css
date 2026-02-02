@@ -1,6 +1,60 @@
 @import "tailwindcss";
 
 /* ==========================================================================
+   Monaspace Font Family Declarations
+   ========================================================================== */
+
+/* Monaspace Argon - Balanced & Neutral */
+@font-face {
+  font-family: 'Monaspace Argon';
+  src: url('/fonts/monaspace/Monaspace Argon Var.woff2') format('woff2'),
+       url('/fonts/monaspace/Monaspace Argon Var.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Monaspace Krypton - Mechanical & Geometric */
+@font-face {
+  font-family: 'Monaspace Krypton';
+  src: url('/fonts/monaspace/Monaspace Krypton Var.woff2') format('woff2'),
+       url('/fonts/monaspace/Monaspace Krypton Var.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Monaspace Neon - Neo-Grotesque */
+@font-face {
+  font-family: 'Monaspace Neon';
+  src: url('/fonts/monaspace/Monaspace Neon Var.woff2') format('woff2'),
+       url('/fonts/monaspace/Monaspace Neon Var.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Monaspace Radon - Handwriting Style */
+@font-face {
+  font-family: 'Monaspace Radon';
+  src: url('/fonts/monaspace/Monaspace Radon Var.woff2') format('woff2'),
+       url('/fonts/monaspace/Monaspace Radon Var.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Monaspace Xenon - Wide & Spacious */
+@font-face {
+  font-family: 'Monaspace Xenon';
+  src: url('/fonts/monaspace/Monaspace Xenon Var.woff2') format('woff2'),
+       url('/fonts/monaspace/Monaspace Xenon Var.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
    Design Tokens & Global Styles
    Compatible with Tailwind CSS + shadcn/ui
    ========================================================================== */
@@ -185,6 +239,18 @@ body {
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   font-feature-settings: 'rlig' 1, 'calt' 1;
+}
+
+/* Monospace Elements - Using Monaspace Neon as default */
+code,
+pre,
+kbd,
+samp,
+tt {
+  font-family: 'Monaspace Neon', 'Monaspace Argon', ui-monospace, 
+    SFMono-Regular, Menlo, Monaco, Consolas, 
+    'Liberation Mono', 'Courier New', monospace;
+  font-feature-settings: 'liga' 1, 'calt' 1, 'ss01' 1, 'ss02' 1;
 }
 
 /* --------------------------------------------------------------------------
