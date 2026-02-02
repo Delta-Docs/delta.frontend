@@ -1,0 +1,334 @@
+/* ==========================================================================
+   Design Tokens & Global Styles
+   Compatible with Tailwind CSS + shadcn/ui
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Color Palette (Raw Values)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Primary Palette */
+  --color-deep-blue: #2A4D88;
+  --color-concerto: #D9D9D8;
+  --color-glacial-salt: #B1BBC8;
+  --color-ocean-city: #7C94B8;
+
+  /* Secondary Palette */
+  --color-deep-navy: #0F2A44;
+  --color-soft-ink: #4A5D73;
+  --color-muted-slate: #7A8898;
+  --color-pure-white: #FFFFFF;
+  --color-soft-border: #E6E8EC;
+
+  /* Semantic Colors */
+  --color-success: #3E7C59;
+  --color-warning: #C28B00;
+  --color-error: #B44343;
+  --color-info: #4A78C2;
+}
+
+/* --------------------------------------------------------------------------
+   Semantic Design Tokens (Light Theme)
+   -------------------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  /* Backgrounds & Surfaces */
+  --background: var(--color-pure-white);
+  --background-secondary: var(--color-concerto);
+  --background-muted: var(--color-glacial-salt);
+  --background-elevated: var(--color-pure-white);
+  --background-overlay: rgba(15, 42, 68, 0.5);
+
+  /* Foreground / Text */
+  --foreground: var(--color-deep-navy);
+  --foreground-secondary: var(--color-soft-ink);
+  --foreground-muted: var(--color-muted-slate);
+  --foreground-inverse: var(--color-pure-white);
+
+  /* Borders */
+  --border: var(--color-soft-border);
+  --border-muted: var(--color-concerto);
+  --border-strong: var(--color-glacial-salt);
+  --border-focus: var(--color-deep-blue);
+
+  /* Primary Action */
+  --primary: var(--color-deep-blue);
+  --primary-foreground: var(--color-pure-white);
+  --primary-hover: var(--color-deep-navy);
+  --primary-active: var(--color-deep-navy);
+
+  /* Secondary Action */
+  --secondary: var(--color-ocean-city);
+  --secondary-foreground: var(--color-deep-navy);
+  --secondary-hover: var(--color-glacial-salt);
+  --secondary-active: var(--color-concerto);
+
+  /* Muted / Subtle */
+  --muted: var(--color-concerto);
+  --muted-foreground: var(--color-soft-ink);
+
+  /* Accent */
+  --accent: var(--color-ocean-city);
+  --accent-foreground: var(--color-deep-navy);
+
+  /* Semantic States */
+  --success: var(--color-success);
+  --success-foreground: var(--color-pure-white);
+  --success-background: rgba(62, 124, 89, 0.1);
+
+  --warning: var(--color-warning);
+  --warning-foreground: var(--color-deep-navy);
+  --warning-background: rgba(194, 139, 0, 0.1);
+
+  --error: var(--color-error);
+  --error-foreground: var(--color-pure-white);
+  --error-background: rgba(180, 67, 67, 0.1);
+
+  --info: var(--color-info);
+  --info-foreground: var(--color-pure-white);
+  --info-background: rgba(74, 120, 194, 0.1);
+
+  /* Interactive States */
+  --hover-opacity: 0.9;
+  --active-opacity: 0.85;
+  --disabled-opacity: 0.5;
+
+  /* Focus */
+  --ring: var(--color-deep-blue);
+  --ring-offset: var(--color-pure-white);
+  --ring-width: 2px;
+  --ring-offset-width: 2px;
+
+  /* Radius (for shadcn/ui compatibility) */
+  --radius: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Dark Theme Placeholder
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  /* Backgrounds & Surfaces */
+  --background: var(--color-deep-navy);
+  --background-secondary: var(--color-soft-ink);
+  --background-muted: var(--color-muted-slate);
+  --background-elevated: var(--color-soft-ink);
+  --background-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Foreground / Text */
+  --foreground: var(--color-pure-white);
+  --foreground-secondary: var(--color-concerto);
+  --foreground-muted: var(--color-glacial-salt);
+  --foreground-inverse: var(--color-deep-navy);
+
+  /* Borders */
+  --border: var(--color-soft-ink);
+  --border-muted: var(--color-muted-slate);
+  --border-strong: var(--color-ocean-city);
+  --border-focus: var(--color-ocean-city);
+
+  /* Primary Action */
+  --primary: var(--color-ocean-city);
+  --primary-foreground: var(--color-deep-navy);
+  --primary-hover: var(--color-glacial-salt);
+  --primary-active: var(--color-concerto);
+
+  /* Secondary Action */
+  --secondary: var(--color-soft-ink);
+  --secondary-foreground: var(--color-pure-white);
+  --secondary-hover: var(--color-muted-slate);
+  --secondary-active: var(--color-deep-blue);
+
+  /* Muted / Subtle */
+  --muted: var(--color-soft-ink);
+  --muted-foreground: var(--color-glacial-salt);
+
+  /* Accent */
+  --accent: var(--color-deep-blue);
+  --accent-foreground: var(--color-pure-white);
+
+  /* Focus */
+  --ring: var(--color-ocean-city);
+  --ring-offset: var(--color-deep-navy);
+}
+
+/* --------------------------------------------------------------------------
+   Base Reset
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 16px;
+  line-height: 1.5;
+  tab-size: 4;
+}
+
+/* --------------------------------------------------------------------------
+   Body Defaults
+   -------------------------------------------------------------------------- */
+body {
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+}
+
+/* --------------------------------------------------------------------------
+   Accessible Focus Styles
+   -------------------------------------------------------------------------- */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--ring-width) solid var(--ring);
+  outline-offset: var(--ring-offset-width);
+}
+
+/* --------------------------------------------------------------------------
+   Link Base Styles
+   -------------------------------------------------------------------------- */
+a {
+  color: var(--primary);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  opacity: var(--hover-opacity);
+  text-decoration: underline;
+}
+
+a:active {
+  opacity: var(--active-opacity);
+}
+
+/* --------------------------------------------------------------------------
+   Button Base Styles
+   -------------------------------------------------------------------------- */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--primary-foreground);
+  background-color: var(--primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+button:active:not(:disabled) {
+  background-color: var(--primary-active);
+}
+
+button:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   Input Base Styles
+   -------------------------------------------------------------------------- */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--foreground);
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--foreground-muted);
+  opacity: 1;
+}
+
+input:hover:not(:disabled),
+textarea:hover:not(:disabled),
+select:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--border-focus);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+  background-color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   Media & Embedded Content
+   -------------------------------------------------------------------------- */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Form Elements Reset
+   -------------------------------------------------------------------------- */
+fieldset {
+  border: none;
+}
+
+legend {
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Table Reset
+   -------------------------------------------------------------------------- */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Misc
+   -------------------------------------------------------------------------- */
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+::selection {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
