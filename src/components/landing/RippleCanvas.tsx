@@ -8,7 +8,6 @@ export function RippleCanvas({ className }: RippleCanvasProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const mouseRef = useRef({ x: -1000, y: -1000 })
     const prevMouseRef = useRef({ x: -1000, y: -1000 })
-    const isTouchRef = useRef(false)
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -81,18 +80,6 @@ export function RippleCanvas({ className }: RippleCanvasProps) {
                 ctx.beginPath()
                 ctx.arc(this.x, this.y, BASE_RADIUS, 0, Math.PI * 2)
                 ctx.fill()
-            }
-        }
-
-        const initParticles = () => {
-            particles = []
-            const rows = Math.ceil(canvas.height / PARTICLE_SPACING)
-            const cols = Math.ceil(canvas.width / PARTICLE_SPACING)
-
-            for (let i = 0; i < cols; i++) {
-                for (let j = 0; j < rows; j++) {
-                    particles.push(new Particle(i * PARTICLE_SPACING, j * PARTICLE_SPACING))
-                }
             }
         }
 
