@@ -5,7 +5,7 @@ import { Button } from '@/components/shadcn/button'
 
 export function DeltaHero() {
     const { scrollY } = useScroll()
-    const yBg = useTransform(scrollY, [0, 500], [0, 200]) 
+    const yBg = useTransform(scrollY, [0, 500], [0, 200])
 
     const waveOffset = useMotionValue(0)
     const lastScroll = useRef(0)
@@ -42,21 +42,17 @@ export function DeltaHero() {
                                 height: Math.random() * 10 + 5 + 'px',
                                 top: `${Math.random() * 100}%`,
                                 left: `${Math.random() * 100}%`,
-                                clipPath: 'polygon(50% 0%, 0% 87%, 100% 87%)', // Equilateral Triangle approx
+                                clipPath: 'polygon(50% 0%, 0% 87%, 100% 87%)',
+                                opacity: 0.6
                             }}
-                            initial={{ opacity: 0 }}
                             animate={{
-                                y: [0, Math.random() * 100 - 50],
-                                x: [0, Math.random() * 100 - 50],
-                                rotate: [0, 360],
-                                scale: [1, 1.2, 1],
-                                opacity: [0, 0.4, 0.1] // Lower opacity for background
+                                y: [0, -30, 0],
+                                rotate: [0, 180],
+                                opacity: [0.3, 0.6, 0.3]
                             }}
                             transition={{
-                                delay: 0.5,
-                                duration: Math.random() * 10 + 15,
+                                duration: Math.random() * 10 + 10,
                                 repeat: Infinity,
-                                repeatType: "reverse",
                                 ease: "easeInOut"
                             }}
                         />
@@ -67,10 +63,10 @@ export function DeltaHero() {
             {/* Container for the effect */}
             <div className="relative w-full max-w-5xl px-4 aspect-[3/1] flex items-center justify-center z-10">
 
-                {/* SVG Layer for masking and stroke */}
+                {/* SVG Layer for text */}
                 <svg
                     className="w-full h-full font-['Monaspace_Neon'] font-bold"
-                    viewBox="0 0 800 200"
+                    viewBox="0 0 800 300"
                     preserveAspectRatio="xMidYMid meet"
                 >
                     <defs>
@@ -78,7 +74,7 @@ export function DeltaHero() {
                             <text
                                 x="50%"
                                 y="50%"
-                                dy=".35em"
+                                dy=".55em"
                                 textAnchor="middle"
                                 fontSize="180"
                                 letterSpacing="-0.02em"
@@ -86,19 +82,27 @@ export function DeltaHero() {
                                 Delta.
                             </text>
                         </clipPath>
-                        {/* Reveal content from Right to Left (Logo Trail) */}
-                        <mask id="reveal-mask">
+
+                        {/* Gradient for Soft Wipe Mask */}
+                        <linearGradient id="reveal-gradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="30%" stopColor="white" stopOpacity="1" />
+                            <stop offset="50%" stopColor="white" stopOpacity="1" />
+                            <stop offset="60%" stopColor="black" stopOpacity="1" />
+                            <stop offset="100%" stopColor="black" stopOpacity="1" />
+                        </linearGradient>
+
+                        <mask id="soft-wipe-mask">
                             <motion.rect
                                 x="0"
                                 y="0"
-                                width="100%"
+                                width="200%"
                                 height="100%"
-                                fill="white"
-                                initial={{ x: "100%" }}
-                                animate={{ x: "0%" }} 
+                                fill="url(#reveal-gradient)"
+                                initial={{ x: "-100%" }}
+                                animate={{ x: "0%" }}
                                 transition={{
-                                    duration: 4,
-                                    ease: "easeInOut"
+                                    duration: 2.5,
+                                    ease: "easeOut"
                                 }}
                             />
                         </mask>
@@ -111,71 +115,41 @@ export function DeltaHero() {
                         width="100%"
                         height="100%"
                         clipPath="url(#delta-text-clip)"
-                        mask="url(#reveal-mask)" // Apply Wipe Mask
-                        style={{ overflow: 'visible' }} 
+                        mask="url(#soft-wipe-mask)"
+                        style={{ overflow: 'visible' }}
                     >
                         <div className="w-full h-full bg-[#D9D9D8]">
                             <RippleCanvas className="w-full h-full" />
                         </div>
                     </foreignObject>
 
-                    {/* Text Stroke to appear with water */}
-                    <motion.text
+                    {/* Text Stroke */}
+                    <text
                         x="50%"
                         y="50%"
-                        dy=".35em"
+                        dy=".55em"
                         textAnchor="middle"
                         fontSize="180"
                         letterSpacing="-0.02em"
                         fill="transparent"
-                        stroke="#2A4D88" 
+                        stroke="#2A4D88"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        mask="url(#reveal-mask)" // Apply Wipe Mask
-                        initial={{ opacity: 1 }} 
-                        animate={{ opacity: 1 }}
+                        mask="url(#soft-wipe-mask)"
                     >
                         Delta.
-                    </motion.text>
+                    </text>
                 </svg>
-
-                {/* Logo Animation Layer */}
-                <motion.div
-                    className="absolute top-1/2 left-0 w-full flex items-center pointer-events-none"
-                    initial={{ opacity: 0, x: "90%" }}
-                    animate={{
-                        opacity: [0, 1, 1, 0], 
-                        x: ["90%", "-10%"] 
-                    }}
-                    transition={{
-                        duration: 4,
-                        times: [0, 0.15, 0.85, 1],
-                        ease: "easeInOut"
-                    }}
-                    style={{
-                        height: '240px', 
-                        marginTop: '-120px'
-                    }}
-                >
-                    {/* Logo Image */}
-                    <div className="relative w-70 h-70 flex items-center justify-center -ml-32"> {/* Center on x-coordinate */}
-                        <img
-                            src="/Delta Docs Logo.png"
-                            alt="Logo"
-                            className="w-full h-full object-contain"
-                        />
-                    </div>
-                </motion.div>
 
             </div>
 
             {/* Tagline */}
             <motion.div
-                className="flex flex-col items-center mt-4 md:-mt-10 space-y-7 z-20"
-                initial={{ opacity: 0, y: 20 }}
+                className="relative z-10 mt-8 space-y-6 flex flex-col items-center"
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 3.2, duration: 0.8 }}
+                transition={{ delay: 2.5, duration: 0.8 }}
             >
                 <h2 className="text-[#2A4D88] text-xl md:text-2xl font-medium text-center">
                     Reflecting every change, preserving every insight.
@@ -193,14 +167,14 @@ export function DeltaHero() {
             <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20">
                 <motion.svg
                     className="relative block w-[400%] h-[100px] md:h-[150px]"
-                    viewBox="0 0 1200 120"
+                    viewBox="0 0 200 120"
                     preserveAspectRatio="none"
                     style={{ x: waveOffset }}
                 >
                     <path
                         d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
                         fill="#2A4D88"
-                        transform="scale(10, -1) translate(0, -120)"
+                        transform="scale(1, -1) translate(0, -120)"
                     ></path>
                 </motion.svg>
             </div>
