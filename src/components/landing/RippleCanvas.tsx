@@ -173,29 +173,17 @@ export function RippleCanvas({ className }: RippleCanvasProps) {
             updateMouse(e.clientX, e.clientY)
         }
 
-        const onTouchMove = (e: TouchEvent) => {
-            if (e.touches.length > 0) {
-                updateMouse(e.touches[0].clientX, e.touches[0].clientY)
-            }
-        }
-
         const onLeave = () => {
             mouseRef.current = { x: -1000, y: -1000 }
         }
 
         window.addEventListener('mousemove', onMouseMove)
         canvas.addEventListener('mouseleave', onLeave)
-        canvas.addEventListener('touchmove', onTouchMove, { passive: true })
-        canvas.addEventListener('touchstart', onTouchMove, { passive: true })
-        canvas.addEventListener('touchend', onLeave)
 
         return () => {
             window.removeEventListener('resize', handleResize)
             window.removeEventListener('mousemove', onMouseMove)
             canvas.removeEventListener('mouseleave', onLeave)
-            canvas.removeEventListener('touchmove', onTouchMove)
-            canvas.removeEventListener('touchstart', onTouchMove)
-            canvas.removeEventListener('touchend', onLeave)
             cancelAnimationFrame(animationFrameId)
         }
     }, [])

@@ -131,7 +131,7 @@ export function DeltaHero() {
                         textAnchor="middle"
                         fontSize="180"
                         letterSpacing="-0.02em"
-                        fill="transparent"
+                        className="fill-[#2A4D88] md:fill-transparent"
                         stroke="#2A4D88"
                         strokeWidth="2"
                         strokeLinecap="round"
