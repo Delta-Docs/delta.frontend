@@ -418,6 +418,12 @@ a:active {
   opacity: var(--active-opacity);
 }
 
+/* Utility class to reset link hover behavior for components */
+a.link-reset:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
 /* --- Buttons (base only, component styling via classes) --- */
 button {
   font-family: inherit;
