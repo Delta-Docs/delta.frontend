@@ -64,9 +64,6 @@ export function AboutSection() {
                         transition={{ delay: 0.2 }}
                         className="bg-[#1E3A66]/30 border border-[#7C94B8]/20 p-8 rounded-xl backdrop-blur-sm"
                     >
-                        <div className="w-12 h-12 bg-[#2A4D88]/50 rounded-lg flex items-center justify-center mb-6 text-2xl">
-                            ▲
-                        </div>
                         <h3 className="text-xl font-semibold text-white mb-3">Instant Updates</h3>
                         <p className="text-[#B1BBC8] leading-relaxed">
                             Docs update automatically when you push code. Always in sync.
@@ -80,9 +77,6 @@ export function AboutSection() {
                         transition={{ delay: 0.3 }}
                         className="bg-[#1E3A66]/30 border border-[#7C94B8]/20 p-8 rounded-xl backdrop-blur-sm"
                     >
-                        <div className="w-12 h-12 bg-[#2A4D88]/50 rounded-lg flex items-center justify-center mb-6 text-2xl">
-                            ▲
-                        </div>
                         <h3 className="text-xl font-semibold text-white mb-3">Smart Alerts</h3>
                         <p className="text-[#B1BBC8] leading-relaxed">
                             We spot differences between code and docs, so you can fix them fast.
@@ -96,9 +90,6 @@ export function AboutSection() {
                         transition={{ delay: 0.4 }}
                         className="bg-[#1E3A66]/30 border border-[#7C94B8]/20 p-8 rounded-xl backdrop-blur-sm"
                     >
-                        <div className="w-12 h-12 bg-[#2A4D88]/50 rounded-lg flex items-center justify-center mb-6 text-2xl">
-                            ▲
-                        </div>
                         <h3 className="text-xl font-semibold text-white mb-3">Safe Merges</h3>
                         <p className="text-[#B1BBC8] leading-relaxed">
                             Stop undocumented changes from merging. Keep quality high effortlessly.
