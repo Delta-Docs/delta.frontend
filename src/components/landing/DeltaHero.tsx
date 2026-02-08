@@ -158,6 +158,7 @@ export function DeltaHero() {
                 <Button
                     size="lg"
                     className="bg-[#0F2A44] hover:bg-[#2A4D88] text-white px-8 py-6 text-lg rounded-md"
+                    onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                     Explore more
                 </Button>
