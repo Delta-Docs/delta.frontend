@@ -39,24 +39,24 @@ export default function Login() {
   const isFormValid = email.trim() !== '' && password.trim() !== ''
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-(--background)">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-deep-blue via-deep-blue/90 to-ocean-city">
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-(--foreground) tracking-tight">
-            Delta
+          <h1 className="text-3xl font-bold text-white tracking-tight">
+            Delta<span className="text-ocean-city">.</span>
           </h1>
-          <p className="mt-2 text-(--foreground-muted)">
+          <p className="mt-2 text-glacial-salt">
             Welcome back
           </p>
         </div>
 
-        <Card className="border-(--border)">
+        <Card className="bg-concerto border-glacial-salt/40 shadow-brand-medium rounded-md">
           <CardHeader className="flex flex-col gap-1 pb-4">
-            <CardTitle className="text-2xl font-semibold text-center">
+            <CardTitle className="text-2xl font-semibold text-center text-deep-navy">
               Sign in
             </CardTitle>
-            <CardDescription className="text-center">
+            <CardDescription className="text-center text-muted-slate">
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
@@ -64,16 +64,16 @@ export default function Login() {
           <form onSubmit={handleSubmit}>
             <CardContent className="flex flex-col gap-4">
               {error && (
-                <Alert variant="destructive" className="border-(--error) bg-(--error-background)">
-                  <WarningCircle className="size-4 text-(--error)" />
-                  <AlertDescription className="text-(--error)">
+                <Alert variant="destructive" className="border-error bg-error/10">
+                  <WarningCircle className="size-4 text-error" />
+                  <AlertDescription className="text-error">
                     {error.message}
                   </AlertDescription>
                 </Alert>
               )}
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-soft-ink">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -83,11 +83,12 @@ export default function Login() {
                   autoComplete="email"
                   required
                   disabled={isPending}
+                  className="bg-pure-white border-glacial-salt/60 rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-deep-blue"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-soft-ink">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -98,12 +99,12 @@ export default function Login() {
                     autoComplete="current-password"
                     required
                     disabled={isPending}
-                    className="pr-10"
+                    className="pr-10 bg-pure-white border-glacial-salt/60 rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-deep-blue"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-(--foreground-muted) hover:text-(--foreground) transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-slate hover:text-soft-ink transition-colors"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -119,7 +120,7 @@ export default function Login() {
             <CardFooter className="flex flex-col gap-4 pt-2">
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-deep-blue text-white hover:bg-deep-blue/90 hover:shadow-cta transition-all"
                 size="lg"
                 disabled={isPending || !isFormValid}
               >
@@ -136,11 +137,11 @@ export default function Login() {
                 )}
               </Button>
 
-              <p className="text-sm text-center text-(--foreground-muted)">
+              <p className="text-sm text-center text-muted-slate">
                 Don't have an account?{' '}
                 <Link
                   to="/signup"
-                  className="font-medium text-(--primary) hover:underline"
+                  className="font-medium text-deep-blue hover:text-ocean-city hover:underline transition-colors"
                 >
                   Sign up
                 </Link>
@@ -149,7 +150,7 @@ export default function Login() {
           </form>
         </Card>
 
-        <p className="mt-8 text-center text-xs text-(--foreground-muted)">
+        <p className="mt-8 text-center text-xs text-glacial-salt/80">
           By signing in, you agree to our Terms of Service and Privacy Policy.
         </p>
       </div>
