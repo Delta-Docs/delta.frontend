@@ -21,7 +21,7 @@ export function DeltaHero() {
     })
 
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-screen bg-[var(--color-concerto)] overflow-hidden pb-30">
+        <div id="hero" className="relative flex flex-col items-center justify-center min-h-screen bg-[var(--color-concerto)] overflow-hidden pb-30">
 
             {/* Background Animations */}
             <motion.div
