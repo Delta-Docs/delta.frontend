@@ -1,19 +1,25 @@
+import { useQuery } from '@tanstack/react-query'
+import { api } from '@/lib/api'
+import type { User } from '@/types/auth'
 import md5 from 'md5'
 
 /**
  * Hook to fetch the current authenticated user
- * Note: The backend uses cookie-based authentication via get_current_user dependency.
- * User data is validated through protected endpoints like /dashboard/stats or /repos/
- * There is no separate /auth/me endpoint - auth is verified automatically via cookies.
+ * Uses /auth/me endpoint to get user info
  */
 export function useCurrentUser() {
-    // Return null as the backend doesn't have a /auth/me endpoint
-    // Authentication is handled via cookies and validated on protected routes
-    return {
-        data: null,
-        isLoading: false,
-        error: null,
-    }
+    return useQuery({
+        queryKey: ['currentUser'],
+        queryFn: async () => {
+            const response = await api.get<User>('/auth/me')
+            if (response.error) {
+                return null
+            }
+            return response.data!
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        retry: false,
+    })
 }
 
 /**
