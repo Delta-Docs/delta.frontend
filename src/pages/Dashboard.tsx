@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
     GitBranch,
     GitCommit,
@@ -102,30 +102,24 @@ function RepositoryRowSkeleton() {
 }
 
 export default function Dashboard() {
-    const navigate = useNavigate()
-    const { data: user } = useCurrentUser()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const { data: user, isLoading: userLoading } = useCurrentUser()
     const { mutate: logout, isPending: logoutPending } = useLogout()
-    const { data: stats, isLoading: statsLoading, error: statsError } = useDashboardStats()
-    const { data: repos, isLoading: reposLoading } = useDashboardRepos()
+    const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useDashboardStats()
+    const { data: repos, isLoading: reposLoading, refetch: refetchRepos } = useDashboardRepos()
     const [showAllRepos, setShowAllRepos] = useState(false)
 
-    // Redirect to login if not authenticated
+    // Check for status parameter (from GitHub callback)
     useEffect(() => {
-        if (statsError) {
-            const errorMessage = (statsError as Error).message.toLowerCase()
-            if (errorMessage.includes('unauthorized') || errorMessage.includes('401')) {
-                navigate('/login', { replace: true })
-            }
+        const status = searchParams.get('status')
+        if (status === 'installed' || status === 'linked') {
+            // Refetch data after GitHub installation
+            refetchStats()
+            refetchRepos()
+            // Remove the status parameter from URL
+            setSearchParams({})
         }
-    }, [statsError, navigate])
-
-    const displayUser = user || {
-        id: 'mock-id',
-        email: 'user@example.com',
-        full_name: 'User',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-    }
+    }, [searchParams, setSearchParams, refetchStats, refetchRepos])
 
     const reposList = repos || []
     const displayedRepos = showAllRepos ? reposList : reposList.slice(0, 5)
@@ -137,6 +131,18 @@ export default function Dashboard() {
                 window.location.href = '/login'
             }
         })
+    }
+
+    // Show loading while fetching user data
+    if (userLoading || !user) {
+        return (
+            <div className="min-h-screen bg-deep-navy flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-ocean-city border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                    <p className="mt-4 text-glacial-salt">Loading...</p>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -188,16 +194,16 @@ export default function Dashboard() {
                     </Link>
                     <div className="dashboard-user">
                         <img
-                            src={getGravatarUrl(displayUser.email)}
+                            src={getGravatarUrl(user.email)}
                             alt="User avatar"
                             className="dashboard-user-avatar"
                         />
                         <div className="dashboard-user-info">
                             <p className="dashboard-user-name">
-                                {displayUser.full_name || 'User'}
+                                {user.full_name || 'User'}
                             </p>
                             <p className="dashboard-user-email">
-                                {displayUser.email}
+                                {user.email}
                             </p>
                         </div>
                         <button
@@ -215,7 +221,7 @@ export default function Dashboard() {
                 <main className="dashboard-card">
                     {/* Greeting */}
                     <div className="dashboard-greeting">
-                        <h2>Welcome back, {displayUser.full_name?.split(' ')[0] || 'there'}</h2>
+                        <h2>Welcome back, {user.full_name?.split(' ')[0] || 'there'}</h2>
                         <p>Here's an overview of your linked repositories</p>
                     </div>
 
