@@ -1,21 +1,47 @@
 import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api'
-import type { User } from '@/types/auth'
 import md5 from 'md5'
+
+const LOCAL_USER_KEY = 'delta-user'
+
+export interface StoredUser {
+    email: string
+    full_name: string | null
+}
+
+export function getStoredUser(): StoredUser | null {
+    if (typeof window === 'undefined') return null
+    const raw = window.localStorage.getItem(LOCAL_USER_KEY)
+    if (!raw) return null
+    try {
+        return JSON.parse(raw) as StoredUser
+    } catch {
+        return null
+    }
+}
+
+export function setStoredUser(user: { email: string; name?: string | null; full_name?: string | null }) {
+    if (typeof window === 'undefined') return
+    const normalized: StoredUser = {
+        email: user.email,
+        full_name: user.full_name ?? user.name ?? null,
+    }
+    window.localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(normalized))
+}
+
+export function clearStoredUser() {
+    if (typeof window === 'undefined') return
+    window.localStorage.removeItem(LOCAL_USER_KEY)
+}
 
 /**
  * Hook to fetch the current authenticated user
- * Uses /auth/me endpoint to get user info
+ * Uses localStorage to get user info
  */
 export function useCurrentUser() {
     return useQuery({
         queryKey: ['currentUser'],
         queryFn: async () => {
-            const response = await api.get<User>('/auth/me')
-            if (response.error) {
-                return null
-            }
-            return response.data!
+            return getStoredUser()
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
         retry: false,
