@@ -9,6 +9,11 @@ export interface UserLogin {
   password: string
 }
 
+export interface LoginResponse {
+  email: string
+  name: string
+}
+
 export interface MessageResponse {
   message: string
 }

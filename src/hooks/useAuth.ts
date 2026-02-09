@@ -1,6 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import type { UserCreate, UserLogin, MessageResponse } from '@/types/auth'
+import { queryClient } from '@/lib/queryClient'
+import type { UserCreate, UserLogin, MessageResponse, LoginResponse } from '@/types/auth'
+import { clearStoredUser, getStoredUser, setStoredUser } from '@/hooks/useUser'
 
 export function useSignup() {
   return useMutation({
@@ -17,11 +19,15 @@ export function useSignup() {
 export function useLogin() {
   return useMutation({
     mutationFn: async (data: UserLogin) => {
-      const response = await api.post<MessageResponse>('/auth/login', data)
+      const response = await api.post<LoginResponse>('/auth/login', data)
       if (response.error) {
         throw new Error(response.error)
       }
       return response.data!
+    },
+    onSuccess: (data) => {
+      setStoredUser({ email: data.email, name: data.name })
+      queryClient.setQueryData(['currentUser'], getStoredUser())
     },
   })
 }
@@ -34,6 +40,10 @@ export function useLogout() {
         throw new Error(response.error)
       }
       return response.data!
+    },
+    onSuccess: () => {
+      clearStoredUser()
+      queryClient.removeQueries({ queryKey: ['currentUser'] })
     },
   })
 }
