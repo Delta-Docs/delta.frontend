@@ -30,7 +30,7 @@ export default function Login() {
       { email, password },
       {
         onSuccess: () => {
-          navigate('/')
+          navigate('/dashboard')
         },
       }
     )

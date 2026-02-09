@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
     GitBranch,
     GitCommit,
@@ -102,11 +102,22 @@ function RepositoryRowSkeleton() {
 }
 
 export default function Dashboard() {
+    const navigate = useNavigate()
     const { data: user } = useCurrentUser()
     const { mutate: logout, isPending: logoutPending } = useLogout()
-    const { data: stats, isLoading: statsLoading } = useDashboardStats()
+    const { data: stats, isLoading: statsLoading, error: statsError } = useDashboardStats()
     const { data: repos, isLoading: reposLoading } = useDashboardRepos()
     const [showAllRepos, setShowAllRepos] = useState(false)
+
+    // Redirect to login if not authenticated
+    useEffect(() => {
+        if (statsError) {
+            const errorMessage = (statsError as Error).message.toLowerCase()
+            if (errorMessage.includes('unauthorized') || errorMessage.includes('401')) {
+                navigate('/login', { replace: true })
+            }
+        }
+    }, [statsError, navigate])
 
     const displayUser = user || {
         id: 'mock-id',
