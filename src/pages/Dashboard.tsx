@@ -257,11 +257,7 @@ export default function Dashboard() {
                     <div className="dashboard-repos-section">
                         <div className="dashboard-repos-header">
                             <h3>Recent Repositories</h3>
-                            <a
-                                href="https://github.com/apps/delta-docs/installations/new"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                            <a href="https://github.com/apps/delta-docs/installations/new">
                                 <Button className="btn-primary-delta">
                                     <Plus className="size-4" />
                                     Link Repository
