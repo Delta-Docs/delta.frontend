@@ -11,7 +11,6 @@ import {
     Desktop,
     Plus
 } from '@phosphor-icons/react'
-import { Card, CardContent } from '@/components/shadcn/card'
 import { Button } from '@/components/shadcn/button'
 import { Skeleton } from '@/components/shadcn/skeleton'
 import { useCurrentUser, getGravatarUrl } from '@/hooks/useUser'

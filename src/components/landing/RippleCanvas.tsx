@@ -46,7 +46,7 @@ export function RippleCanvas({ className }: RippleCanvasProps) {
                 this.vy = 0
             }
 
-            update(width: number, height: number, mvx: number, mvy: number) {
+            update(_width: number, _height: number, mvx: number, mvy: number) {
                 // 1. Calculate distance to mouse/touch
                 const dx = this.x - mouseRef.current.x
                 const dy = this.y - mouseRef.current.y
