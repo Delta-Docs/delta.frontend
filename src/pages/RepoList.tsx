@@ -1,102 +1,214 @@
+// RepoList.tsx - Repository List Page
+// Displays all GitHub repositories linked to the user's account
+// Allows navigation to individual repository settings
+
 import { Link } from 'react-router-dom'
-import { GitBranch, ArrowClockwise, SignOut, GithubLogo, Gear, Triangle } from '@phosphor-icons/react'
+import { GitBranch, ArrowClockwise, SignOut, Gear, ArrowLeft, GithubLogo } from '@phosphor-icons/react'
 import { useRepos, type Repository } from '@/hooks/useRepos'
 import { useLogout } from '@/hooks/useAuth'
+import { useCurrentUser, getGravatarUrl } from '@/hooks/useUser'
 import { Button } from '@/components/shadcn/button'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/shadcn/card'
+import { Skeleton } from '@/components/shadcn/skeleton'
 
+// RepoCard Component - Displays individual repository information in a card
 const RepoCard = ({ repo }: { repo: Repository }) => {
     return (
-        <Card className="border-(--border) bg-(--card) hover:bg-(--accent)/5 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <div className="space-y-1">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                        <GithubLogo className="size-5" />
-                        <span className="truncate max-w-[200px]">{repo.repo_name}</span>
-                    </CardTitle>
-                    <CardDescription>
-                        ID: {repo.id.slice(0, 8)}...
-                    </CardDescription>
+        <div className="repo-row">
+            <div className="repo-row-info">
+                <img
+                    src={getGravatarUrl(repo.repo_name)}
+                    className="repo-row-avatar"
+                    alt=""
+                />
+                <div className="repo-row-text">
+                    <Link to={`/repos/${repo.id}`} className="repo-row-name">
+                        {repo.repo_name}
+                    </Link>
+                    <p className="repo-row-description">
+                        {repo.is_active ? '✓ Monitoring active' : '○ Monitoring paused'}
+                    </p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link to={`/repos/${repo.id}`} title="Settings">
-                            <Gear className="size-5" />
-                        </Link>
-                    </Button>
-                </div>
-            </CardHeader>
-        </Card>
+            </div>
+            <div className="repo-row-meta">
+                <a
+                    href={`https://github.com/${repo.repo_name}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-deep-navy hover:text-deep-blue font-semibold transition-colors mr-3 flex items-center gap-1.5 bg-white/40 px-3 py-1.5 rounded-md hover:bg-white/60"
+                >
+                    <GithubLogo className="size-4" weight="fill" />
+                    View on GitHub
+                </a>
+                <Button variant="ghost" size="sm" asChild className="text-deep-navy hover:text-deep-blue bg-white/40 hover:bg-white/60 font-semibold">
+                    <Link to={`/repos/${repo.id}`} className="flex items-center">
+                        <Gear className="size-4 mr-2" />
+                        Settings
+                    </Link>
+                </Button>
+            </div>
+        </div>
     )
 }
 
+function RepoCardSkeleton() {
+    return (
+        <div className="repo-row">
+            <div className="repo-row-info">
+                <Skeleton className="size-10 rounded-full" />
+                <div className="repo-row-text">
+                    <Skeleton className="h-5 w-48 mb-1" />
+                    <Skeleton className="h-4 w-64" />
+                </div>
+            </div>
+            <div className="repo-row-meta">
+                <Skeleton className="h-8 w-24" />
+            </div>
+        </div>
+    )
+}
+
+// Main RepoList Component
 export default function RepoList() {
+    // Fetch repositories from API using React Query
     const { data: repos, isLoading, error, refetch } = useRepos()
-    const logout = useLogout()
+    const { data: user, isLoading: userLoading } = useCurrentUser()
+    const { mutate: logout, isPending: logoutPending } = useLogout()
+
+    const handleLogout = () => {
+        logout(undefined, {
+            onSuccess: () => {
+                window.location.href = '/login'
+            }
+        })
+    }
+
+    if (userLoading || !user) {
+        return (
+            <div className="min-h-screen bg-deep-navy flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-ocean-city border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                    <p className="mt-4 text-glacial-salt">Loading...</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
-        <div className="min-h-screen bg-(--background)">
-            {/* Navbar */}
-            <header className="border-b border-(--border) bg-(--card)/50 backdrop-blur-sm sticky top-0 z-10 transition-all duration-200">
-                <div className="w-full px-8 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="size-8 rounded-lg bg-(--primary) flex items-center justify-center text-(--primary-foreground)">
-                            <Triangle weight="fill" className="size-5" />
+        <div className="dashboard-page">
+            {/* Animated Background */}
+            <div className="dashboard-background">
+                <div className="dashboard-decorations">
+                    <div className="geo-triangle t1" />
+                    <div className="geo-triangle t2" />
+                    <div className="geo-triangle t3" />
+                    <div className="geo-triangle t4" />
+                    <div className="geo-triangle t5" />
+                    <div className="geo-triangle t6" />
+                    <div className="geo-triangle t7" />
+                    <div className="geo-triangle t8" />
+                    <div className="geo-triangle t9" />
+                    <div className="geo-triangle t10" />
+                    <div className="geo-dot d1" />
+                    <div className="geo-dot d2" />
+                    <div className="geo-dot d3" />
+                    <div className="geo-dot d4" />
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="dashboard-container">
+                {/* Header */}
+                <header className="dashboard-header">
+                    <div className="flex items-center gap-3">
+                        <Button variant="ghost" size="icon" asChild title="Back to Dashboard">
+                            <Link to="/dashboard">
+                                <ArrowLeft className="size-5" />
+                            </Link>
+                        </Button>
+                        <Link to="/dashboard" className="dashboard-logo">
+                            <div className="dashboard-logo-icon">
+                                <img src="/logo.png" alt="Delta Logo" className="size-full object-contain p-1" />
+                            </div>
+                            <h1 className="dashboard-logo-text">Delta<span>.</span></h1>
+                        </Link>
+                    </div>
+                    <div className="dashboard-user">
+                        <img
+                            src={getGravatarUrl(user.email)}
+                            alt="User avatar"
+                            className="dashboard-user-avatar"
+                        />
+                        <div className="dashboard-user-info">
+                            <p className="dashboard-user-name">
+                                {user.full_name || 'User'}
+                            </p>
+                            <p className="dashboard-user-email">
+                                {user.email}
+                            </p>
                         </div>
-                        <span className="font-bold text-lg">Delta</span>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" onClick={() => refetch()} title="Refresh">
-                            <ArrowClockwise className={`size-5 ${isLoading ? 'animate-spin' : ''}`} />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => logout.mutate()} title="Sign out">
+                        <button
+                            onClick={handleLogout}
+                            disabled={logoutPending}
+                            className="dashboard-logout-btn"
+                            title="Sign out"
+                        >
                             <SignOut className="size-5" />
-                        </Button>
+                        </button>
                     </div>
-                </div>
-            </header>
+                </header>
 
-            <main className="container mx-0 px-12 py-8 max-w-7xl animate-in fade-in duration-500">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold tracking-tight mb-2">Repositories</h1>
-                    <p className="text-(--muted-foreground)">
-                        Select a repository to manage automation settings.
-                    </p>
-                </div>
+                {/* Main Card */}
+                <main className="dashboard-card">
+                    {/* Page Header */}
+                    <div className="dashboard-greeting">
+                        <h2>Manage Repositories</h2>
+                        <p>Configure monitoring settings for your linked repositories</p>
+                    </div>
 
-                {isLoading ? (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="h-32 rounded-xl border border-(--border) bg-(--card) animate-pulse" />
-                        ))}
+                    {/* Repositories Section */}
+                    <div className="dashboard-repos-section">
+                        <div className="dashboard-repos-header">
+                            <h3>All Repositories</h3>
+                            <Button variant="ghost" size="sm" onClick={() => refetch()} title="Refresh">
+                                <ArrowClockwise className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
+                            </Button>
+                        </div>
+
+                        <div className="dashboard-repos-list">
+                            {isLoading ? (
+                                <>
+                                    <RepoCardSkeleton />
+                                    <RepoCardSkeleton />
+                                    <RepoCardSkeleton />
+                                </>
+                            ) : error ? (
+                                <div className="dashboard-repos-empty">
+                                    <GitBranch className="size-12 opacity-30" />
+                                    <p className="text-red-400">Error loading repositories</p>
+                                    <Button variant="outline" className="mt-4" onClick={() => refetch()}>
+                                        Retry
+                                    </Button>
+                                </div>
+                            ) : repos?.length === 0 ? (
+                                <div className="dashboard-repos-empty">
+                                    <GitBranch className="size-12 opacity-30" />
+                                    <p>No repositories linked yet</p>
+                                    <p className="text-sm opacity-70">Connect your GitHub account to get started</p>
+                                </div>
+                            ) : (
+                                repos?.map((repo) => (
+                                    <RepoCard key={repo.id} repo={repo} />
+                                ))
+                            )}
+                        </div>
                     </div>
-                ) : error ? (
-                    <div className="p-8 text-center text-(--destructive)">
-                        <p>Error loading repositories. Please try again.</p>
-                        <Button variant="outline" className="mt-4" onClick={() => refetch()}>Retry</Button>
-                    </div>
-                ) : repos?.length === 0 ? (
-                    <div className="text-center py-20 border-2 border-dashed border-(--border) rounded-xl">
-                        <GitBranch className="size-12 mx-auto text-(--muted-foreground) mb-4" />
-                        <h3 className="text-lg font-medium">No repositories linked</h3>
-                        <p className="text-(--muted-foreground) mb-6">
-                            Connect the GitHub App to get started.
-                        </p>
-                        <Button asChild>
-                            <a href="https://github.com/apps/YOUR_APP_NAME" target="_blank" rel="noreferrer">
-                                Install App
-                            </a>
-                        </Button>
-                    </div>
-                ) : (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {repos?.map(repo => (
-                            <RepoCard key={repo.id} repo={repo} />
-                        ))}
-                    </div>
-                )}
-            </main>
+                </main>
+
+                {/* Footer */}
+                <footer className="dashboard-footer">
+                    <p>By using Delta, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></p>
+                </footer>
+            </div>
         </div>
     )
 }

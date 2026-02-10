@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from '@/pages/Login'
 import Signup from '@/pages/Signup'
+import Dashboard from '@/pages/Dashboard'
+import Landing from '@/pages/Landing'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { PublicRoute } from '@/components/auth/PublicRoute'
 
 import RepoList from '@/pages/RepoList'
 import RepoSettings from '@/pages/RepoSettings'
@@ -9,13 +13,54 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
 
-        <Route path="/repos" element={<RepoList />} />
-        <Route path="/repos/:repoId" element={<RepoSettings />} />
+        {/* Auth Routes - Redirect to repos if already authenticated */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute redirectIfAuthenticated>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute redirectIfAuthenticated>
+              <Signup />
+            </PublicRoute>
+          }
+        />
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Protected Routes - Require authentication */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/repos"
+          element={
+            <ProtectedRoute>
+              <RepoList />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/repos/:repoId"
+          element={
+            <ProtectedRoute>
+              <RepoSettings />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
