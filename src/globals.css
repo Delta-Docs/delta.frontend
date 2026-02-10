@@ -105,17 +105,26 @@
 
 :root {
   /* --- Primary Brand Palette --- */
-  --color-deep-blue: #2A4D88;      /* Primary brand color */
-  --color-ocean-city: #7C94B8;     /* Secondary accent */
-  --color-concerto: #D9D9D8;       /* Light surface */
-  --color-glacial-salt: #B1BBC8;   /* Borders & muted elements */
+  --color-deep-blue: #2A4D88;
+  /* Primary brand color */
+  --color-ocean-city: #7C94B8;
+  /* Secondary accent */
+  --color-concerto: #D9D9D8;
+  /* Light surface */
+  --color-glacial-salt: #B1BBC8;
+  /* Borders & muted elements */
 
   /* --- Supporting Palette --- */
-  --color-deep-navy: #0F2A44;      /* Dark contrast, body text */
-  --color-soft-ink: #4A5D73;       /* Secondary text */
-  --color-muted-slate: #7A8898;    /* Muted/placeholder text */
-  --color-pure-white: #FFFFFF;     /* Pure white */
-  --color-soft-border: #E6E8EC;    /* Subtle borders */
+  --color-deep-navy: #0F2A44;
+  /* Dark contrast, body text */
+  --color-soft-ink: #4A5D73;
+  /* Secondary text */
+  --color-muted-slate: #7A8898;
+  /* Muted/placeholder text */
+  --color-pure-white: #FFFFFF;
+  /* Pure white */
+  --color-soft-border: #E6E8EC;
+  /* Subtle borders */
 
   /* --- Semantic Status Colors --- */
   --color-success: #3E7C59;
@@ -386,7 +395,11 @@ body {
 }
 
 /* Monospace elements use Monaspace Neon by default */
-code, pre, kbd, samp, tt {
+code,
+pre,
+kbd,
+samp,
+tt {
   font-family: 'Monaspace Neon', 'Monaspace Argon', ui-monospace,
     SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-feature-settings: 'liga' 1, 'calt' 1, 'ss01' 1, 'ss02' 1;
@@ -435,7 +448,9 @@ button:disabled {
 }
 
 /* --- Form Inputs (base only) --- */
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: inherit;
 }
 
@@ -446,7 +461,11 @@ textarea::placeholder {
 }
 
 /* --- Media --- */
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
@@ -1210,7 +1229,8 @@ hr {
 .dashboard-footer a:hover {
   color: var(--color-deep-navy);
 }
-   7. UTILITY CLASSES
+
+/*  7. UTILITY CLASSES
    ==========================================================================
    Reusable component classes for buttons, cards, inputs, and decorative
    elements. Use these in combination with Tailwind utilities.
