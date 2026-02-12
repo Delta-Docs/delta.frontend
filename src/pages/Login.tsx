@@ -18,7 +18,7 @@ import { Alert, AlertDescription } from '@/components/shadcn/alert'
 export default function Login() {
   const navigate = useNavigate()
   const { mutate: login, isPending, error, reset } = useLogin()
-  
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

@@ -8,6 +8,7 @@ export interface DashboardStats {
 
 // Repository from /dashboard/repos endpoint
 export interface Repository {
+    id: string
     name: string
     description: string | null
     language: string | null
