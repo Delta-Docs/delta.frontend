@@ -240,32 +240,44 @@ export default function RepoSettings() {
 
                                     {/* Sensitivity and Style */}
                                     <div className="grid gap-4 sm:grid-cols-2">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="drift-sensitivity">Drift Sensitivity</Label>
-                                            <select
-                                                id="drift-sensitivity"
-                                                className="flex h-9 w-full rounded-md border border-(--input) bg-transparent px-3 py-1 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-(--muted-foreground) focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-(--ring) disabled:cursor-not-allowed disabled:opacity-50 text-white"
-                                                value={driftSensitivity}
-                                                onChange={(e) => setDriftSensitivity(Number(e.target.value))}
-                                            >
-                                                <option className="text-black" value={0.1}>Low (0.1) - Major changes only</option>
-                                                <option className="text-black" value={0.5}>Medium (0.5) - Balanced</option>
-                                                <option className="text-black" value={0.9}>High (0.9) - Strict</option>
-                                            </select>
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <Label htmlFor="drift-sensitivity">Drift Sensitivity</Label>
+                                                <span className="text-xs font-mono bg-ocean-city/10 text-ocean-city px-2 py-0.5 rounded-full border border-ocean-city/20">
+                                                    {(driftSensitivity * 100).toFixed(0)}%
+                                                </span>
+                                            </div>
+                                            <div className="relative pt-1">
+                                                <input
+                                                    id="drift-sensitivity"
+                                                    type="range"
+                                                    min="0"
+                                                    max="1"
+                                                    step="0.01"
+                                                    value={driftSensitivity}
+                                                    onChange={(e) => setDriftSensitivity(Number(e.target.value))}
+                                                    className="w-full h-1.5 bg-glacial-salt/20 rounded-lg appearance-none cursor-pointer accent-ocean-city focus:outline-none"
+                                                />
+                                                <div className="flex justify-between text-[10px] mt-2 text-black font-semibold opacity-60 px-1">
+                                                    <span>Low (0.0)</span>
+                                                    <span>Medium (0.5)</span>
+                                                    <span>High (1.0)</span>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className="space-y-2">
                                             <Label htmlFor="style-preference">Style Preference</Label>
                                             <select
                                                 id="style-preference"
-                                                className="flex h-9 w-full rounded-md border border-(--input) bg-transparent px-3 py-1 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-(--muted-foreground) focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-(--ring) disabled:cursor-not-allowed disabled:opacity-50 text-white"
+                                                className="flex h-9 w-full rounded-md border border-glacial-salt/20 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ocean-city text-white"
                                                 value={stylePreference}
                                                 onChange={(e) => setStylePreference(e.target.value)}
                                             >
-                                                <option className="text-black" value="professional">Professional</option>
-                                                <option className="text-black" value="concise">Concise</option>
-                                                <option className="text-black" value="tutorial">Tutorial</option>
-                                                <option className="text-black" value="api-first">API-First</option>
+                                                <option className="text-black" value="Concise">Concise</option>
+                                                <option className="text-black" value="Descriptive">Descriptive</option>
+                                                <option className="text-black" value="Professional">Professional</option>
+                                                <option className="text-black" value="Technical">Technical</option>
                                             </select>
                                         </div>
                                     </div>

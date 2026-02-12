@@ -56,7 +56,7 @@ function RepositoryRow({ repo }: { repo: Repository }) {
                     alt=""
                 />
                 <div className="repo-row-text">
-                    <Link to={`/repo/${repo.name}`} className="repo-row-name">
+                    <Link to={`/repos/${repo.id}`} className="repo-row-name">
                         {repo.name}
                     </Link>
                     <p className="repo-row-description">{repo.description || 'No description'}</p>
@@ -193,12 +193,6 @@ export default function Dashboard() {
                         <h1 className="dashboard-logo-text">Delta<span>.</span></h1>
                     </Link>
                     <div className="dashboard-user">
-                        <Link to="/repos">
-                            <Button variant="outline" size="sm" className="mr-3">
-                                <GitBranch className="size-4 mr-2" />
-                                Manage Repos
-                            </Button>
-                        </Link>
                         <img
                             src={getGravatarUrl(user.email)}
                             alt="User avatar"
@@ -263,12 +257,20 @@ export default function Dashboard() {
                     <div className="dashboard-repos-section">
                         <div className="dashboard-repos-header">
                             <h3>Recent Repositories</h3>
-                            <a href="https://github.com/apps/delta-docs/installations/new">
-                                <Button className="btn-primary-delta">
-                                    <Plus className="size-4" />
-                                    Link Repository
-                                </Button>
-                            </a>
+                            <div className="flex items-center gap-2">
+                                <Link to="/repos">
+                                    <Button variant="outline" className="border-glacial-salt/20 hover:bg-ocean-city/10">
+                                        <GitBranch className="size-4 mr-2" />
+                                        Manage Repos
+                                    </Button>
+                                </Link>
+                                <a href="https://github.com/apps/delta-docs/installations/new">
+                                    <Button className="btn-primary-delta">
+                                        <Plus className="size-4 mr-2" />
+                                        Link Repository
+                                    </Button>
+                                </a>
+                            </div>
                         </div>
 
                         <div className="dashboard-repos-list">
