@@ -13,6 +13,7 @@ import { Label } from '@/components/shadcn/label'
 import { Badge } from '@/components/shadcn/badge'
 import { Separator } from '@/components/shadcn/separator'
 import { Skeleton } from '@/components/shadcn/skeleton'
+import { toast } from 'sonner'
 
 // Main RepoSettings Component
 export default function RepoSettings() {
@@ -64,12 +65,26 @@ export default function RepoSettings() {
                 drift_sensitivity: Number(driftSensitivity),
                 style_preference: stylePreference
             }
+        }, {
+            onSuccess: () => {
+                toast.success('Settings saved successfully!')
+            },
+            onError: (error) => {
+                toast.error(`Failed to save settings: ${error.message}`)
+            }
         })
     }
 
     // Toggle Active Handler
     const handleToggleActive = (isActive: boolean) => {
-        toggleRepo.mutate({ id: repo!.id, is_active: isActive })
+        toggleRepo.mutate({ id: repo!.id, is_active: isActive }, {
+            onSuccess: () => {
+                toast.success(isActive ? 'Repository monitoring enabled' : 'Repository monitoring disabled')
+            },
+            onError: (error) => {
+                toast.error(`Failed to update status: ${error.message}`)
+            }
+        })
     }
 
     // Loading State
