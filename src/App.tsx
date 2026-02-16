@@ -5,6 +5,7 @@ import Dashboard from '@/pages/Dashboard'
 import Landing from '@/pages/Landing'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { PublicRoute } from '@/components/auth/PublicRoute'
+import { Toaster } from '@/components/shadcn/sonner'
 
 import RepoList from '@/pages/RepoList'
 import RepoSettings from '@/pages/RepoSettings'
@@ -12,6 +13,7 @@ import RepoSettings from '@/pages/RepoSettings'
 function App() {
   return (
     <BrowserRouter>
+      <Toaster />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
