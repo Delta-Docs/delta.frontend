@@ -8,7 +8,7 @@ import { Label } from '@/components/shadcn/label'
 import {
   Card,
   CardContent,
-  CardDescription,
+
   CardFooter,
   CardHeader,
   CardTitle,
@@ -39,26 +39,23 @@ export default function Login() {
   const isFormValid = email.trim() !== '' && password.trim() !== ''
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-deep-blue via-deep-blue/90 to-ocean-city">
-      <div className="w-full max-w-md">
+    <div className="h-screen flex items-center justify-center px-4 overflow-hidden relative">
+      {/* Blurred gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-deep-blue via-deep-blue/90 to-ocean-city blur-sm scale-110" />
+
+      <div className="w-full max-w-md relative z-10">
         {/* Logo/Brand */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h1 className="text-3xl font-bold text-white tracking-tight">
             Delta<span className="text-ocean-city">.</span>
           </h1>
-          <p className="mt-2 text-glacial-salt">
-            Welcome back
-          </p>
         </div>
 
-        <Card className="bg-concerto border-glacial-salt/40 shadow-brand-medium rounded-md">
-          <CardHeader className="flex flex-col gap-1 pb-4">
+        <Card className="bg-concerto border-glacial-salt/20 rounded-xl shadow-[0_25px_60px_-10px_rgba(0,0,0,0.4)] transform scale-[1.02]">
+          <CardHeader className="flex flex-col items-center gap-1 pb-2">
             <CardTitle className="text-2xl font-semibold text-center text-deep-navy">
-              Sign in
+              Sign In
             </CardTitle>
-            <CardDescription className="text-center text-muted-slate">
-              Enter your credentials to access your account
-            </CardDescription>
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
@@ -150,8 +147,8 @@ export default function Login() {
           </form>
         </Card>
 
-        <p className="mt-8 text-center text-xs text-glacial-salt/80">
-          By signing in, you agree to our Terms of Service and Privacy Policy.
+        <p className="mt-4 text-center text-xs text-glacial-salt/80">
+          © 2026 Delta. All rights reserved.
         </p>
       </div>
     </div>
