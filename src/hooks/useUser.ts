@@ -61,5 +61,5 @@ export function getGravatarUrl(identifier: string, size: number = 80): string {
         : `${identifier.toLowerCase().trim()}@placeholder.com`
 
     const hash = md5(email)
-    return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=identicon`
+    return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=robohash`
 }
