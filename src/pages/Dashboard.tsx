@@ -51,7 +51,7 @@ function RepositoryRow({ repo }: { repo: Repository }) {
         <div className="repo-row">
             <div className="repo-row-info">
                 <img
-                    src={getGravatarUrl(repo.name)}
+                    src={repo.avatar_url || `https://www.gravatar.com/avatar/${repo.name}?d=robohash`}
                     className="repo-row-avatar"
                     alt=""
                 />

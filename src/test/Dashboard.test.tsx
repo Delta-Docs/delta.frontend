@@ -19,12 +19,12 @@ const mockStats = {
 }
 
 const mockRepos = [
-    { id: '1', name: 'delta-frontend', description: 'Frontend app', language: 'TypeScript', stargazers_count: 42, forks_count: 8, avatar_url: null },
-    { id: '2', name: 'delta-backend', description: 'Backend API', language: 'Python', stargazers_count: 30, forks_count: 5, avatar_url: null },
+    { id: '1', name: 'delta-frontend', description: 'Frontend app', language: 'TypeScript', stargazers_count: 42, forks_count: 8, avatar_url: 'https://avatars.githubusercontent.com/u/1?v=4' },
+    { id: '2', name: 'delta-backend', description: 'Backend API', language: 'Python', stargazers_count: 30, forks_count: 5, avatar_url: 'https://avatars.githubusercontent.com/u/2?v=4' },
     { id: '3', name: 'delta-docs', description: null, language: 'Markdown', stargazers_count: 10, forks_count: 2, avatar_url: null },
-    { id: '4', name: 'delta-cli', description: 'CLI tool', language: 'Go', stargazers_count: 15, forks_count: 3, avatar_url: null },
-    { id: '5', name: 'delta-sdk', description: 'SDK library', language: 'TypeScript', stargazers_count: 20, forks_count: 4, avatar_url: null },
-    { id: '6', name: 'delta-infra', description: 'Infrastructure', language: 'Terraform', stargazers_count: 5, forks_count: 1, avatar_url: null },
+    { id: '4', name: 'delta-cli', description: 'CLI tool', language: 'Go', stargazers_count: 15, forks_count: 3, avatar_url: 'https://avatars.githubusercontent.com/u/4?v=4' },
+    { id: '5', name: 'delta-sdk', description: 'SDK library', language: 'TypeScript', stargazers_count: 20, forks_count: 4, avatar_url: 'https://avatars.githubusercontent.com/u/5?v=4' },
+    { id: '6', name: 'delta-infra', description: 'Infrastructure', language: 'Terraform', stargazers_count: 5, forks_count: 1, avatar_url: 'https://avatars.githubusercontent.com/u/6?v=4' },
     { id: '7', name: 'delta-design', description: 'Design system', language: 'CSS', stargazers_count: 8, forks_count: 0, avatar_url: null },
 ]
 
@@ -281,13 +281,14 @@ describe('Dashboard - Repositories List', () => {
         expect(repoLink).toHaveAttribute('href', '/repos/1')
     })
 
-    // Each repo row should have a Gravatar-based avatar
-    it('renders repo avatars using Gravatar', () => {
+    // Each repo row should have an avatar from the API (avatar_url)
+    it('renders repo avatars using returned avatar_url', () => {
         render(<Dashboard />, { wrapper })
 
         const avatars = screen.getAllByAltText('')
         expect(avatars.length).toBeGreaterThan(0)
-        expect(avatars[0].getAttribute('src')).toContain('gravatar.com')
+        // First repo has avatar_url set
+        expect(avatars[0].getAttribute('src')).toContain('avatars.githubusercontent.com')
     })
 })
 
