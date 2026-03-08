@@ -76,7 +76,7 @@ function RepositoryRow({ repo }: { repo: Repository }) {
                     alt=""
                 />
                 <div className="repo-row-text">
-                    <Link to={`/repos/${repo.id}`} className="repo-row-name">
+                    <Link to={`/repos/${repo.id}/events`} className="repo-row-name">
                         {repo.repo_name}
                     </Link>
                     <p className="repo-row-description">
@@ -93,24 +93,28 @@ function RepositoryRow({ repo }: { repo: Repository }) {
                 )}
                 
                 {/* Quick Actions - visible on hover */}
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 transition-opacity">
                     <Link
                         to={`/repos/${repo.id}/events`}
-                        className="p-1.5 rounded hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                        className="p-2 rounded hover:bg-white/10 transition-colors"
+                        style={{ color: 'white' }}
                         title="View drift events"
                     >
-                        <GitCommit className="size-4" />
+                        <GitCommit className="size-6" style={{ color: 'white' }} />
                     </Link>
                     <Link
                         to={`/repos/${repo.id}`}
-                        className="p-1.5 rounded hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                        className="p-2 rounded hover:bg-white/10 transition-colors"
+                        style={{ color: 'white' }}
                         title="Repository settings"
                     >
-                        <Gear className="size-4" />
+                        <Gear className="size-6" style={{ color: 'white' }} />
                     </Link>
                 </div>
                 
-                <CaretRight className="size-4 opacity-50" />
+                <Link to={`/repos/${repo.id}/events`} className="cursor-pointer" title="View drift events">
+                    <CaretRight className="size-4 opacity-50 hover:opacity-100 transition-opacity" style={{ color: 'white' }} />
+                </Link>
             </div>
         </div>
     )
@@ -275,10 +279,7 @@ export default function Dashboard() {
                             value={stats?.repos_linked_count ?? 0}
                             isLoading={statsLoading}
                             hint="Click to manage"
-                            onClick={() => {
-                                const reposSection = document.getElementById('repos-section')
-                                reposSection?.scrollIntoView({ behavior: 'smooth' })
-                            }}
+                            href="/repos"
                         />
                         <StatTile
                             icon={GitCommit}
