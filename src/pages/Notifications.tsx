@@ -28,20 +28,20 @@ function NotificationRow({
 }) {
   return (
     <div
-      className={`repo-row group ${!notification.is_read ? 'bg-white/5' : ''}`}
+      className={`repo-row group transition-all ${!notification.is_read ? 'bg-white/5 border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}
       onClick={() => !notification.is_read && onMarkRead(notification.id)}
     >
       <div className="repo-row-info">
         {/* Unread indicator */}
-        <div className="flex-shrink-0 w-6 flex justify-center">
+        <div className="shrink-0 w-6 flex items-center justify-center">
           {!notification.is_read && (
-            <div className="w-2.5 h-2.5 rounded-full bg-blue-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-sm shadow-blue-400/50" />
           )}
         </div>
 
         {/* Content */}
         <div className="repo-row-text flex-1">
-          <p className={`text-sm leading-relaxed ${notification.is_read ? 'opacity-70' : 'font-medium'}`}>
+          <p className={`text-sm leading-relaxed ${notification.is_read ? 'text-white/60' : 'text-white font-medium'}`}>
             {notification.content}
           </p>
           <p className="repo-row-description text-xs mt-1">
@@ -51,12 +51,12 @@ function NotificationRow({
       </div>
 
       {/* Actions */}
-      <div className="repo-row-meta opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="repo-row-meta flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         {!notification.is_read && (
           <Button
             variant="ghost"
             size="sm"
-            className="text-white/70 hover:text-white hover:bg-white/10"
+            className="text-white/70 hover:text-white hover:bg-green-500/20 transition-colors"
             onClick={(e) => {
               e.stopPropagation()
               onMarkRead(notification.id)
@@ -69,7 +69,7 @@ function NotificationRow({
         <Button
           variant="ghost"
           size="sm"
-          className="text-white/70 hover:text-red-400 hover:bg-red-500/10"
+          className="text-white/70 hover:text-red-400 hover:bg-red-500/20 transition-colors"
           onClick={(e) => {
             e.stopPropagation()
             onDelete(notification.id)
@@ -232,23 +232,31 @@ export default function Notifications() {
           {/* Page Header */}
           <div className="dashboard-greeting">
             <div className="flex items-center gap-3">
-              <Bell className="size-6 text-deep-navy" weight="duotone" />
-              <h2>Notifications</h2>
-              {unreadCount > 0 && (
-                <span className="bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">
-                  {unreadCount} new
-                </span>
-              )}
+              <div className="p-2 bg-deep-blue/50 rounded-lg">
+                <Bell className="size-6 text-white" weight="duotone" />
+              </div>
+              <div className="flex-1">
+                <h2 className="flex items-center gap-2">
+                  Notifications
+                  {unreadCount > 0 && (
+                    <span className="bg-blue-500 text-white text-xs px-2.5 py-1 rounded-full font-medium shadow-sm">
+                      {unreadCount} new
+                    </span>
+                  )}
+                </h2>
+                <p className="text-sm">Stay updated on your repositories and drift analysis</p>
+              </div>
             </div>
-            <p>Stay updated on your repositories and drift analysis</p>
           </div>
 
           {/* Actions Bar */}
-          <div className="flex items-center justify-between mb-6">
-            <Tabs value={filter} onValueChange={(v) => setFilter(v as 'all' | 'unread')}>
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="unread">
+          <div className="flex items-center justify-between mb-6 gap-4">
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as 'all' | 'unread')} className="flex-1">
+              <TabsList className="bg-deep-blue/30">
+                <TabsTrigger value="all" className="data-[state=active]:bg-deep-blue data-[state=active]:text-white text-white/60">
+                  All Notifications
+                </TabsTrigger>
+                <TabsTrigger value="unread" className="data-[state=active]:bg-deep-blue data-[state=active]:text-white text-white/60">
                   Unread {unreadCount > 0 && `(${unreadCount})`}
                 </TabsTrigger>
               </TabsList>
@@ -261,9 +269,9 @@ export default function Notifications() {
                   size="sm"
                   onClick={handleMarkAllRead}
                   disabled={markAllRead.isPending}
-                  className="border-deep-navy/30 text-deep-navy hover:bg-deep-navy/10"
+                  className="border-white/20 text-white hover:bg-green-500/20 hover:border-green-400 transition-colors"
                 >
-                  <Check className="size-4 mr-1" />
+                  <Check className="size-4 mr-1.5" />
                   Mark all read
                 </Button>
               )}
@@ -273,9 +281,9 @@ export default function Notifications() {
                   size="sm"
                   onClick={handleDeleteAll}
                   disabled={deleteAll.isPending}
-                  className="border-deep-navy/30 text-deep-navy hover:border-red-400 hover:text-red-600 hover:bg-red-50"
+                  className="border-blue-400/40 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400 transition-colors"
                 >
-                  <Trash className="size-4 mr-1" />
+                  <Trash className="size-4 mr-1.5" />
                   Delete all
                 </Button>
               )}
@@ -291,16 +299,25 @@ export default function Notifications() {
                 <NotificationRowSkeleton />
               </>
             ) : error ? (
-              <div className="dashboard-repos-empty">
-                <Bell className="size-12 opacity-30" />
-                <p className="text-red-400">Error loading notifications</p>
+              <div className="dashboard-repos-empty py-16">
+                <div className="p-4 bg-red-500/10 rounded-lg mb-4">
+                  <Bell className="size-12 text-red-400 mx-auto mb-2" weight="duotone" />
+                </div>
+                <p className="text-red-400 font-medium text-lg mb-2">Error loading notifications</p>
+                <p className="text-white/50 text-sm">Please try refreshing the page</p>
               </div>
             ) : filteredNotifications?.length === 0 ? (
-              <div className="dashboard-repos-empty">
-                <Bell className="size-12 opacity-30" />
-                <p>{filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}</p>
-                <p className="text-sm opacity-70">
-                  Notifications appear when drift is detected or PRs are created
+              <div className="dashboard-repos-empty py-16">
+                <div className="p-4 bg-deep-blue/30 rounded-lg mb-4">
+                  <Bell className="size-12 text-white/40 mx-auto" weight="duotone" />
+                </div>
+                <p className="text-white/70 font-medium text-lg mb-2">
+                  {filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
+                </p>
+                <p className="text-white/50 text-sm">
+                  {filter === 'unread' 
+                    ? 'All caught up! Check back later for new updates.'
+                    : 'Notifications appear when drift is detected or PRs are created'}
                 </p>
               </div>
             ) : (
