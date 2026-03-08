@@ -30,7 +30,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { ScoreIndicator } from '@/components/shared/ScoreIndicator'
 import { NotificationBell } from '@/components/shared/NotificationBell'
 import { Breadcrumb } from '@/components/shared/Breadcrumb'
-import { useDriftEventDetail, useDriftFindings, useCodeChanges } from '@/hooks/useDriftEvents'
+import { useDriftEventDetail } from '@/hooks/useDriftEvents'
 import { useRepos } from '@/hooks/useRepos'
 import { useCurrentUser, getGravatarUrl } from '@/hooks/useUser'
 import { useLogout } from '@/hooks/useAuth'
@@ -245,10 +245,12 @@ export default function DriftEventDetail() {
   const { data: repos } = useRepos()
   const repo = repos?.find((r) => r.id === repoId)
   const { data: event, isLoading: eventLoading } = useDriftEventDetail(repoId!, eventId!)
-  const { data: findings, isLoading: findingsLoading } = useDriftFindings(repoId!, eventId!)
-  const { data: codeChanges } = useCodeChanges(repoId!, eventId!)
   const { data: user, isLoading: userLoading } = useCurrentUser()
   const { mutate: logout, isPending: logoutPending } = useLogout()
+
+  // Extract findings and code changes from nested event data
+  const findings = event?.findings
+  const codeChanges = event?.code_changes
 
   const handleLogout = () => {
     logout(undefined, {
@@ -439,24 +441,12 @@ export default function DriftEventDetail() {
                 </div>
               </section>
 
-              {/* Summary */}
-              {event.summary && (
-                <section>
-                  <h3 className="font-semibold text-lg mb-3 text-deep-navy">Summary</h3>
-                  <div className="stat-tile !bg-deep-navy/50">
-                    <pre className="whitespace-pre-wrap text-sm leading-relaxed font-mono">
-                      {event.summary}
-                    </pre>
-                  </div>
-                </section>
-              )}
-
               {/* Findings */}
               <section>
                 <h3 className="font-semibold text-lg mb-3 text-deep-navy">
                   Drift Findings {findings && `(${findings.length})`}
                 </h3>
-                {findingsLoading ? (
+                {eventLoading ? (
                   <div className="stat-tile">
                     <Skeleton className="h-20 w-full" />
                   </div>
@@ -477,42 +467,6 @@ export default function DriftEventDetail() {
 
             {/* Right Column - Sidebar */}
             <div className="space-y-6">
-              {/* Agent Logs */}
-              {event.agent_logs && (
-                <section className="bg-deep-blue rounded-xl overflow-hidden shadow-lg">
-                  <div className="px-4 py-3 border-b border-white/10">
-                    <h3 className="font-semibold text-base text-white">Agent Logs</h3>
-                  </div>
-                  <Accordion type="multiple" className="w-full">
-                    {Object.entries(event.agent_logs).map(([phase, log]) => {
-                      const phaseConfig: Record<string, { icon: React.ReactNode; color: string; bg: string }> = {
-                        Scouting: { icon: <FileCode className="size-4" />, color: 'text-blue-300', bg: 'bg-blue-500/20' },
-                        Retrieval: { icon: <FileDoc className="size-4" />, color: 'text-cyan-300', bg: 'bg-cyan-500/20' },
-                        Analysis: { icon: <Warning className="size-4" />, color: 'text-amber-300', bg: 'bg-amber-500/20' },
-                        Result: { icon: <CheckCircle className="size-4" />, color: 'text-green-300', bg: 'bg-green-500/20' },
-                      }
-                      const config = phaseConfig[phase] || { icon: <FileCode className="size-4" />, color: 'text-white/70', bg: 'bg-white/10' }
-                      
-                      return (
-                        <AccordionItem key={phase} value={phase} className="border-b border-white/5 last:border-none">
-                          <AccordionTrigger className="px-4 py-3 hover:bg-white/5 hover:no-underline transition-colors">
-                            <div className="flex items-center gap-3">
-                              <div className={`p-1.5 rounded-md ${config.bg} ${config.color}`}>
-                                {config.icon}
-                              </div>
-                              <span className="font-medium text-sm text-white/90">{phase}</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4 pb-4">
-                            <p className="text-xs text-white/60 leading-relaxed pl-9">{log}</p>
-                          </AccordionContent>
-                        </AccordionItem>
-                      )
-                    })}
-                  </Accordion>
-                </section>
-              )}
-
               {/* Code Changes */}
               {codeChanges && codeChanges.length > 0 && (
                 <section className="bg-deep-blue rounded-xl overflow-hidden shadow-lg">
