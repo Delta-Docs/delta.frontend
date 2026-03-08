@@ -388,12 +388,12 @@ describe('Dashboard - Repositories List', () => {
         expect(activeLabels.length).toBeGreaterThan(0)
     })
 
-    // Repo name should link to /repos/:id
+    // Repo name should link to /repos/:id/events
     it('links each repo name to its detail page', () => {
         render(<Dashboard />, { wrapper })
 
         const repoLink = screen.getByRole('link', { name: 'user/delta-frontend' })
-        expect(repoLink).toHaveAttribute('href', '/repos/1')
+        expect(repoLink).toHaveAttribute('href', '/repos/1/events')
     })
 
     // Each repo row should have an avatar from the API (avatar_url)
