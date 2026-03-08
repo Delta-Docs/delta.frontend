@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams, useNavigate } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
     GitBranch,
     GitCommit,
@@ -8,8 +8,7 @@ import {
     SignOut,
     Desktop,
     Plus,
-    Gear,
-    Bell
+    Gear
 } from '@phosphor-icons/react'
 import { Button } from '@/components/shadcn/button'
 import { Skeleton } from '@/components/shadcn/skeleton'
@@ -138,7 +137,6 @@ function RepositoryRowSkeleton() {
 
 export default function Dashboard() {
     const [searchParams, setSearchParams] = useSearchParams()
-    const navigate = useNavigate()
     const { data: user, isLoading: userLoading } = useCurrentUser()
     const { mutate: logout, isPending: logoutPending } = useLogout()
     const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useDashboardStats()
@@ -303,16 +301,6 @@ export default function Dashboard() {
                         <div className="dashboard-repos-header">
                             <h3>Recent Repositories</h3>
                             <div className="flex items-center gap-2">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-deep-navy/70 hover:text-deep-navy hover:bg-deep-navy/10"
-                                    onClick={() => navigate('/notifications')}
-                                    title="View all notifications"
-                                >
-                                    <Bell className="size-4 mr-1" />
-                                    Notifications
-                                </Button>
                                 <Link to="/repos">
                                     <Button variant="outline" className="border-deep-navy/30 text-deep-navy hover:bg-deep-navy/10">
                                         <GitBranch className="size-4 mr-2" />

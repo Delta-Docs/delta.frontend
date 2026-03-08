@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, SignOut, FloppyDisk, GitBranch, GitPullRequest, CaretRight, CheckCircle, Clock, XCircle, GithubLogo, ArrowSquareOut, Gear } from '@phosphor-icons/react'
+import { ArrowLeft, SignOut, FloppyDisk, GitPullRequest, CaretRight, CheckCircle, Clock, XCircle, GithubLogo, ArrowSquareOut, Gear } from '@phosphor-icons/react'
 import { useRepos, useUpdateRepoSettings, useToggleRepo } from '@/hooks/useRepos'
 import { useCurrentUser, getGravatarUrl } from '@/hooks/useUser'
 import { useLogout } from '@/hooks/useAuth'
