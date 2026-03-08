@@ -104,16 +104,16 @@ function FindingCard({ finding }: { finding: DriftFinding }) {
   }
 
   return (
-    <AccordionItem value={finding.id} className="border-white/10">
-      <AccordionTrigger className="hover:no-underline py-3">
-        <div className="flex items-center gap-3 text-left">
-          <FileCode className="size-5 text-blue-400 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <code className="text-sm font-mono">{finding.code_path}</code>
+    <AccordionItem value={finding.id} className="border-white/10 w-full">
+      <AccordionTrigger className="hover:no-underline py-4 px-4 hover:bg-white/5 transition-colors w-full">  
+        <div className="flex items-center gap-4 flex-1 min-w-0 text-left">
+          <FileCode className="size-5 text-blue-400 shrink-0" />
+          <div className="flex-1 min-w-0 flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-4 flex-wrap">
+              <code className="text-sm font-mono text-white">{finding.code_path}</code>
               {finding.change_type && (
                 <span
-                  className={`text-xs px-2 py-0.5 rounded ${
+                  className={`text-xs px-2 py-1 rounded font-medium ${
                     changeTypeColors[finding.change_type] || 'bg-gray-100'
                   }`}
                 >
@@ -121,7 +121,7 @@ function FindingCard({ finding }: { finding: DriftFinding }) {
                 </span>
               )}
               {finding.drift_type && (
-                <span className="text-xs px-2 py-0.5 rounded bg-orange-100 text-orange-700 flex items-center gap-1">
+                <span className="text-xs px-2 py-1 rounded bg-orange-100 text-orange-700 flex items-center gap-1 font-medium">
                   {driftTypeIcons[finding.drift_type]}
                   {finding.drift_type.replace('_', ' ')}
                 </span>
@@ -129,23 +129,25 @@ function FindingCard({ finding }: { finding: DriftFinding }) {
             </div>
           </div>
           {finding.drift_score !== null && (
-            <ScoreIndicator score={finding.drift_score} size="sm" showLabel={false} />
+            <div className="shrink-0 mr-4">
+              <ScoreIndicator score={finding.drift_score} size="sm" showLabel={false} />
+            </div>
           )}
         </div>
       </AccordionTrigger>
-      <AccordionContent className="pt-2 pb-4">
-        <div className="pl-8 space-y-3">
+      <AccordionContent className="pt-2 pb-4 px-4">
+        <div className="pl-9 space-y-3">
           {finding.explanation && (
-            <p className="text-sm text-gray-300 leading-relaxed">{finding.explanation}</p>
+            <p className="text-sm text-white/80 leading-relaxed">{finding.explanation}</p>
           )}
           {finding.doc_file_path && (
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-white/60">
               <FileDoc className="inline size-3 mr-1" />
               Related doc: <code className="text-blue-300">{finding.doc_file_path}</code>
             </p>
           )}
           {finding.confidence !== null && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-white/50 font-medium">
               Confidence: {(finding.confidence * 100).toFixed(0)}%
             </p>
           )}
@@ -451,7 +453,7 @@ export default function DriftEventDetail() {
                     <Skeleton className="h-20 w-full" />
                   </div>
                 ) : findings && findings.length > 0 ? (
-                  <Accordion type="multiple" className="stat-tile !p-0 overflow-hidden">
+                  <Accordion type="multiple" className="stat-tile p-0! overflow-hidden w-full">
                     {findings.map((finding) => (
                       <FindingCard key={finding.id} finding={finding} />
                     ))}
