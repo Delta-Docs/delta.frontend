@@ -22,15 +22,7 @@ export type DriftType = 'outdated_docs' | 'missing_docs' | 'ambiguous_docs'
 // Change types
 export type ChangeType = 'added' | 'modified' | 'deleted'
 
-// Agent logs structure from backend
-export interface AgentLogs {
-  Scouting: string
-  Retrieval: string
-  Analysis: string
-  Result: string
-}
-
-// Drift event from API
+// Drift event from API (list view - minimal data)
 export interface DriftEvent {
   id: string
   pr_number: number
@@ -39,17 +31,26 @@ export interface DriftEvent {
   processing_phase: ProcessingPhase
   drift_result: DriftResult
   overall_drift_score: number | null
-  summary: string | null
+  created_at: string
+  docs_pr_number: number | null
+}
+
+// Extended drift event with full details and nested data
+export interface DriftEventDetail {
+  id: string
+  pr_number: number
+  base_branch: string
+  head_branch: string
+  processing_phase: ProcessingPhase
+  drift_result: DriftResult
+  overall_drift_score: number | null
   error_message: string | null
   started_at: string | null
   completed_at: string | null
   created_at: string
   docs_pr_number: number | null
-}
-
-// Extended drift event with agent logs
-export interface DriftEventDetail extends DriftEvent {
-  agent_logs: AgentLogs | null
+  findings: DriftFinding[]
+  code_changes: CodeChange[]
 }
 
 // Drift finding from API
