@@ -100,9 +100,10 @@ function DriftEventRow({ event, repoName }: { event: DriftEvent; repoName: strin
             href={`https://github.com/${repoName}/pull/${event.docs_pr_number}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs bg-deep-blue/20 text-deep-blue px-2 py-1 rounded-full hover:bg-deep-blue/30"
+            className="text-xs bg-deep-blue/20 text-white px-2 py-1 rounded-full hover:bg-deep-blue/30"
             onClick={(e) => e.stopPropagation()}
             title="View generated docs PR"
+            style={{ color: 'white' }}
           >
             Fix PR #{event.docs_pr_number}
           </a>
@@ -116,6 +117,7 @@ function DriftEventRow({ event, repoName }: { event: DriftEvent; repoName: strin
           className="text-white hover:text-ocean-city transition-colors"
           onClick={(e) => e.stopPropagation()}
           title="View PR on GitHub"
+          style={{ color: 'white' }}
         >
           <GithubLogo className="size-5" weight="fill" />
         </a>
@@ -324,8 +326,16 @@ export default function DriftEvents() {
               </TabsList>
             </Tabs>
 
-            <Button variant="ghost" size="sm" onClick={() => refetch()} title="Refresh">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => refetch()} 
+              disabled={isLoading}
+              className="hover:bg-white/10 text-white disabled:opacity-50"
+              title="Refresh"
+            >
               <ArrowClockwise className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
+              {!isLoading && <span className="ml-1.5 text-xs">Refresh</span>}
             </Button>
           </div>
 
