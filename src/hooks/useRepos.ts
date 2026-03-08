@@ -22,6 +22,7 @@ export interface RepositorySettings {
     style_preference?: string
     target_branch?: string
     docs_root_path?: string
+    file_ignore_patterns?: string[] | null
 }
 
 export interface RepositoryActivation {
