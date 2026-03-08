@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import type { DriftEvent, DriftEventDetail, DriftFinding, CodeChange } from '@/types/drift'
+import type { DriftEvent, DriftEventDetail } from '@/types/drift'
 import { isEventInProgress } from '@/types/drift'
 
 /**
@@ -20,7 +20,7 @@ export function useDriftEvents(repoId: string) {
 }
 
 /**
- * Hook to fetch a single drift event with full details
+ * Hook to fetch a single drift event with full details, findings, and code changes
  */
 export function useDriftEventDetail(repoId: string, eventId: string) {
   return useQuery({
@@ -39,42 +39,6 @@ export function useDriftEventDetail(repoId: string, eventId: string) {
       }
       return false // Don't poll for completed events
     },
-    enabled: !!repoId && !!eventId,
-  })
-}
-
-/**
- * Hook to fetch drift findings for an event
- */
-export function useDriftFindings(repoId: string, eventId: string) {
-  return useQuery({
-    queryKey: ['driftFindings', repoId, eventId],
-    queryFn: async () => {
-      const response = await api.get<DriftFinding[]>(
-        `/repos/${repoId}/drift-events/${eventId}/findings`
-      )
-      if (response.error) throw new Error(response.error)
-      return response.data!
-    },
-    staleTime: 30 * 1000, // 30 seconds
-    enabled: !!repoId && !!eventId,
-  })
-}
-
-/**
- * Hook to fetch code changes for an event
- */
-export function useCodeChanges(repoId: string, eventId: string) {
-  return useQuery({
-    queryKey: ['codeChanges', repoId, eventId],
-    queryFn: async () => {
-      const response = await api.get<CodeChange[]>(
-        `/repos/${repoId}/drift-events/${eventId}/code-changes`
-      )
-      if (response.error) throw new Error(response.error)
-      return response.data!
-    },
-    staleTime: 60 * 1000, // 1 minute (code changes don't update)
     enabled: !!repoId && !!eventId,
   })
 }
