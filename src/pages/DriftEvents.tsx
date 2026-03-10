@@ -67,11 +67,9 @@ function DriftEventRow({ event, repoName }: { event: DriftEvent; repoName: strin
       onClick={() => navigate(`${event.id}`)}
     >
       <div className="repo-row-info">
-        {/* Result icon */}
-        <div className="flex-shrink-0">{getResultIcon(event.drift_result)}</div>
-
         {/* PR info */}
         <div className="repo-row-text">
+          {/* First Line: PR Number and Badges */}
           <div className="flex items-center gap-2">
             <span className="repo-row-name">PR #{event.pr_number}</span>
             <StatusBadge status={event.processing_phase} size="sm" />
@@ -79,12 +77,17 @@ function DriftEventRow({ event, repoName }: { event: DriftEvent; repoName: strin
               <StatusBadge status={event.drift_result} size="sm" />
             )}
           </div>
-          <p className="repo-row-description">
-            <GitBranch className="inline size-3 mr-1" />
-            {event.head_branch} → {event.base_branch}
-            <span className="mx-2">•</span>
-            {formatTimeAgo(event.created_at)}
-          </p>
+
+          {/* Second Line: Icon, Branches, Date */}
+          <div className="flex items-center gap-2 mt-1">
+            <div className="flex-shrink-0 scale-75 origin-left">{getResultIcon(event.drift_result)}</div>
+            <p className="repo-row-description !mt-0 flex items-center">
+              <GitBranch className="inline size-3 mr-1" />
+              {event.head_branch} → {event.base_branch}
+              <span className="mx-2">•</span>
+              {formatTimeAgo(event.created_at)}
+            </p>
+          </div>
         </div>
       </div>
 

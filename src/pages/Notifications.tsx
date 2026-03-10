@@ -228,7 +228,7 @@ export default function Notifications() {
             ]}
             className="mb-4"
           />
-          
+
           {/* Page Header */}
           <div className="dashboard-greeting">
             <div className="flex items-center gap-3">
@@ -269,7 +269,7 @@ export default function Notifications() {
                   size="sm"
                   onClick={handleMarkAllRead}
                   disabled={markAllRead.isPending}
-                  className="border-white/20 text-white hover:bg-green-500/20 hover:border-green-400 transition-colors"
+                  className="border-green-400/40 text-green-400 hover:bg-green-500/20 hover:border-green-400 transition-colors"
                 >
                   <Check className="size-4 mr-1.5" />
                   Mark all read
@@ -315,7 +315,7 @@ export default function Notifications() {
                   {filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
                 </p>
                 <p className="text-white/50 text-sm">
-                  {filter === 'unread' 
+                  {filter === 'unread'
                     ? 'All caught up! Check back later for new updates.'
                     : 'Notifications appear when drift is detected or PRs are created'}
                 </p>

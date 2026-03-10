@@ -37,15 +37,21 @@ import { useLogout } from '@/hooks/useAuth'
 import { isEventInProgress, type ProcessingPhase, type DriftFinding, type CodeChange } from '@/types/drift'
 import { useState } from 'react'
 
-// Workflow phases in order
-const WORKFLOW_PHASES: ProcessingPhase[] = [
+const WORKFLOW_PHASES_FULL: ProcessingPhase[] = [
   'queued',
   'scouting',
   'analyzing',
   'generating',
   'verifying',
-  'pr_raised',
-  'pr_merged',
+  'fix_pr_raised',
+  'fix_pr_merged',
+]
+
+const WORKFLOW_PHASES_CLEAN: ProcessingPhase[] = [
+  'queued',
+  'scouting',
+  'analyzing',
+  'completed'
 ]
 
 const PHASE_LABELS: Record<string, string> = {
@@ -54,36 +60,38 @@ const PHASE_LABELS: Record<string, string> = {
   analyzing: 'Analyze',
   generating: 'Generate',
   verifying: 'Verify',
-  pr_raised: 'PR Raised',
-  pr_merged: 'PR Merged',
+  fix_pr_raised: 'PR Raised',
+  fix_pr_merged: 'PR Merged',
+  completed: 'Completed'
 }
 
 function WorkflowProgress({ currentPhase, driftResult }: { currentPhase: ProcessingPhase, driftResult?: string }) {
-  let currentIndex = WORKFLOW_PHASES.indexOf(currentPhase)
+  const isClean = driftResult === 'clean'
+  const phases = isClean ? WORKFLOW_PHASES_CLEAN : WORKFLOW_PHASES_FULL
+  let currentIndex = phases.indexOf(currentPhase)
 
   if (currentPhase === 'completed') {
-    // Handle legacy backend state
-    currentIndex = driftResult === 'clean' ? 3 : 7 // stop after analyzing if clean, else treat as fully complete
+    currentIndex = isClean ? 3 : 7
   }
 
   const isFailed = currentPhase === 'failed'
 
   return (
     <div className="flex items-center gap-1 w-full flex-wrap sm:flex-nowrap">
-      {WORKFLOW_PHASES.map((phase, i) => {
+      {phases.map((phase, i) => {
         let isCompleted = false
         let isCurrent = false
 
         if (currentPhase === 'completed') {
-          isCompleted = i < currentIndex
+          isCompleted = i <= currentIndex
           isCurrent = false
         } else {
-          isCompleted = i < currentIndex || currentPhase === 'pr_merged'
+          isCompleted = i < currentIndex || currentPhase === 'fix_pr_merged'
           isCurrent = phase === currentPhase
         }
 
         return (
-          <div key={phase} className={`flex items-center ${i < WORKFLOW_PHASES.length - 1 ? 'flex-1' : ''}`}>
+          <div key={phase} className={`flex items-center ${i < phases.length - 1 ? 'flex-1' : ''}`}>
             <div className="flex flex-col items-center gap-1">
               <div
                 className={`
@@ -100,7 +108,7 @@ function WorkflowProgress({ currentPhase, driftResult }: { currentPhase: Process
                 {PHASE_LABELS[phase]}
               </span>
             </div>
-            {i < WORKFLOW_PHASES.length - 1 && (
+            {i < phases.length - 1 && (
               <div
                 className={`flex-1 min-w-[12px] h-1 mx-1 sm:mx-2 rounded self-start mt-4 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}
               />

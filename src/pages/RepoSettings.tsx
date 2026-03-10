@@ -63,7 +63,7 @@ export default function RepoSettings() {
         if (repo) {
             setDocsPath(repo.docs_root_path || '/docs')
             setDefaultBranch(repo.target_branch || 'main')
-            setReviewerGithubId(repo.reviewer_github_id || '')
+            setReviewerGithubId(repo.reviewer || '')
             setDocsPolicies(repo.docs_policies || '')
             setStylePreference(repo.style_preference || 'professional')
             setIgnorePatterns(repo.file_ignore_patterns?.join(', ') || '')
@@ -88,7 +88,7 @@ export default function RepoSettings() {
             settings: {
                 docs_root_path: docsPath,
                 target_branch: defaultBranch,
-                reviewer_github_id: reviewerGithubId || null,
+                reviewer: reviewerGithubId || null,
                 docs_policies: docsPolicies || null,
                 style_preference: stylePreference,
                 file_ignore_patterns: patterns
@@ -338,12 +338,13 @@ export default function RepoSettings() {
                                     {/* Document Policies */}
                                     <div className="space-y-1.5">
                                         <Label htmlFor="docs-policies" className="text-white text-sm">Document Policies</Label>
-                                        <Input
+                                        <textarea
                                             id="docs-policies"
                                             value={docsPolicies}
                                             onChange={(e) => setDocsPolicies(e.target.value)}
-                                            placeholder="e.g. Always include a changelog..."
-                                            className="bg-deep-navy/50 border-white/20 text-white placeholder:text-white/40 h-8 font-mono"
+                                            placeholder="e.g. Always include a changelog...&#10;Use formal tone..."
+                                            rows={2}
+                                            className="flex w-full rounded-md border border-white/20 bg-deep-navy/50 px-3 py-2 text-sm text-white placeholder:text-white/40 font-mono resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ocean-city"
                                         />
                                         <p className="text-[11px] text-white/50">
                                             Custom instructions for documentation generation.

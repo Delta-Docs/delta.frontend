@@ -10,7 +10,7 @@ export interface Repository {
     avatar_url: string | null
     docs_root_path: string
     target_branch: string
-    reviewer_github_id: string | null
+    reviewer: string | null
     docs_policies: string | null
     style_preference: string
     file_ignore_patterns: string[] | null
@@ -19,7 +19,7 @@ export interface Repository {
 }
 
 export interface RepositorySettings {
-    reviewer_github_id?: string | null
+    reviewer?: string | null
     docs_policies?: string | null
     style_preference?: string
     target_branch?: string
