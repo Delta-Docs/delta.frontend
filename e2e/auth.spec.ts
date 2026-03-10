@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Flow', () => {
-  test('User can log in successfully and be redirected to dashboard', async ({ page }) => {
+  test('User can log in successfully and be redirected to dashboard', async ({ page }: { page: import('@playwright/test').Page }) => {
     // Navigate to the login page
     await page.goto('/login');
 
@@ -21,7 +21,8 @@ test.describe('Authentication Flow', () => {
     await expect(page).toHaveURL(/\/dashboard/);
     
     // Verify dashboard elements are visible indicating successful login
-    await expect(page.getByText('test@example.com')).toBeVisible();
+    // Note: The seeded user full_name is "Test User"
+    await expect(page.getByText('Test User')).toBeVisible();
     await expect(page.getByText('Delta.')).toBeVisible();
   });
 });
