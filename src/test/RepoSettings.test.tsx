@@ -2,8 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import RepoSettings from '../pages/RepoSettings'
-import { toast } from 'sonner' // Ensure toast is imported properly
+import { toast } from 'sonner' 
 
 // ---- Mock Data ----
 const mockUser = {
@@ -18,16 +19,21 @@ const mockRepo = {
     is_active: false,
     docs_root_path: '/docs',
     target_branch: 'main',
+    reviewer: 'test-reviewer',
+    docs_policies: 'Test Policy',
     drift_sensitivity: 0.8,
     style_preference: 'Professional',
 }
 
 // ---- Mutable Mock Returns ----
+const createTestQueryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
 let mockUserReturn: any
 let mockLogoutReturn: any
 let mockReposReturn: any
 let mockUpdateSettingsReturn: any
 let mockToggleRepoReturn: any
+let mockDriftEventsReturn: any
 
 // ---- Mocks ----
 vi.mock('@/hooks/useUser', () => ({
@@ -43,6 +49,14 @@ vi.mock('@/hooks/useRepos', () => ({
     useRepos: () => mockReposReturn,
     useUpdateRepoSettings: () => mockUpdateSettingsReturn,
     useToggleRepo: () => mockToggleRepoReturn,
+}))
+
+vi.mock('@/hooks/useDriftEvents', () => ({
+    useDriftEvents: () => mockDriftEventsReturn
+}))
+
+vi.mock('@/components/shared/NotificationBell', () => ({
+    NotificationBell: () => <div>NotificationBell</div>
 }))
 
 // Mock React Router parameters to target the specific repo
@@ -64,7 +78,9 @@ vi.mock('sonner', () => ({
 
 // Wrapper component
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <BrowserRouter>{children}</BrowserRouter>
+    <QueryClientProvider client={createTestQueryClient()}>
+        <BrowserRouter>{children}</BrowserRouter>
+     </QueryClientProvider>
 )
 
 describe('RepoSettings Component - Unit Tests', () => {
@@ -73,6 +89,7 @@ describe('RepoSettings Component - Unit Tests', () => {
         mockUserReturn = { data: mockUser, isLoading: false }
         mockLogoutReturn = { mutate: vi.fn(), isPending: false }
         mockReposReturn = { data: [mockRepo], isLoading: false }
+        mockDriftEventsReturn = { data: [], isLoading: false }
         
         // Mock the mutation functions correctly based on Tanstack Query signature
         mockUpdateSettingsReturn = { 
@@ -121,6 +138,8 @@ describe('RepoSettings Component - Unit Tests', () => {
         // Verify default config values mapped correctly to input fields
         expect(screen.getByDisplayValue('/docs')).toBeInTheDocument()
         expect(screen.getByDisplayValue('main')).toBeInTheDocument()
+        expect(screen.getByDisplayValue('test-reviewer')).toBeInTheDocument()
+        expect(screen.getByDisplayValue('Test Policy')).toBeInTheDocument()
     })
 
     // ========================================
@@ -183,12 +202,12 @@ describe('RepoSettings Component - Unit Tests', () => {
         expect(mockUpdateSettingsReturn.mutate).toHaveBeenCalledWith(
             {
                 id: 'repo-123',
-                settings: {
+                settings: expect.objectContaining({
                     docs_root_path: '/new/path',
                     target_branch: 'main',
                     drift_sensitivity: 0.8,
                     style_preference: 'Professional'
-                }
+                })
             },
             expect.any(Object)
         )
