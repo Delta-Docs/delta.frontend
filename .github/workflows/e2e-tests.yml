@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Delta-Docs/delta.backend
+          ref: backend-e2e-support
           path: delta.backend
       
       # Setup Backend
