@@ -14,8 +14,8 @@ const phaseStyles: Record<ProcessingPhase, string> = {
   analyzing: 'bg-blue-500 text-white border-blue-600 animate-pulse',
   generating: 'bg-amber-500 text-white border-amber-600 animate-pulse',
   verifying: 'bg-cyan-600 text-white border-cyan-700 animate-pulse',
-  pr_raised: 'bg-indigo-500 text-white border-indigo-600',
-  pr_merged: 'bg-purple-500 text-white border-purple-600',
+  fix_pr_raised: 'bg-indigo-500 text-white border-indigo-600',
+  fix_pr_merged: 'bg-purple-500 text-white border-purple-600',
   completed: 'bg-green-500 text-white border-green-600',
   failed: 'bg-red-500 text-white border-red-600',
 }
@@ -36,8 +36,8 @@ const phaseLabels: Record<ProcessingPhase, string> = {
   analyzing: 'Analyzing',
   generating: 'Generating',
   verifying: 'Verifying',
-  pr_raised: 'PR Raised',
-  pr_merged: 'PR Merged',
+  fix_pr_raised: 'PR Raised',
+  fix_pr_merged: 'PR Merged',
   completed: 'Analysis Completed',
   failed: 'Failed',
 }
