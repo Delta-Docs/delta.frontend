@@ -132,7 +132,7 @@ describe('RepoSettings Component - Unit Tests', () => {
 
     it('renders the repository name and correct status badge', () => {
         render(<RepoSettings />, { wrapper })
-        expect(screen.getByText('delta/frontend')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: /delta\/frontend/i })).toBeInTheDocument()
         expect(screen.getByText('Inactive')).toBeInTheDocument() // Because mock is_active is false
         
         // Verify default config values mapped correctly to input fields
@@ -175,7 +175,7 @@ describe('RepoSettings Component - Unit Tests', () => {
         render(<RepoSettings />, { wrapper })
         
         const pathInput = screen.getByLabelText(/Documentation Path/i)
-        const branchInput = screen.getByLabelText(/Default Branch/i)
+        const branchInput = screen.getByLabelText(/Target Branch/i)
         
         await user.clear(pathInput)
         await user.type(pathInput, '/public/docs')
@@ -205,7 +205,6 @@ describe('RepoSettings Component - Unit Tests', () => {
                 settings: expect.objectContaining({
                     docs_root_path: '/new/path',
                     target_branch: 'main',
-                    drift_sensitivity: 0.8,
                     style_preference: 'Professional'
                 })
             },

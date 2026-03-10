@@ -36,6 +36,9 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         vi.mock('@/hooks/useAuth', () => ({
             useLogout: () => ({ mutate: vi.fn(), isPending: false })
         }))
+        vi.mock('@/components/shared/NotificationBell', () => ({
+            NotificationBell: () => <div>NotificationBell</div>
+        }))
     })
 
     afterEach(() => {
@@ -61,7 +64,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         const mockFetch = global.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async (url: string) => {
-            if (url.includes('/dashboard/repos')) {
+            if (url.includes('/repos/')) {
                 return {
                     ok: true,
                     json: async () => [] // Zero repositories
@@ -76,6 +79,13 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
                         drift_events_count: 0,
                         pr_waiting_count: 0,
                     })
+                }
+            }
+            
+            if (url.includes('/notifications')) {
+                return {
+                    ok: true,
+                    json: async () => []
                 }
             }
             
@@ -98,7 +108,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         expect(zeroes.length).toBeGreaterThanOrEqual(4)
         
         // Verify that the React application natively dispatched API requests to the expected endpoints
-        expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/dashboard/repos'), expect.anything())
+        expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/repos/'), expect.anything())
         expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/dashboard/stats'), expect.anything())
     })
 
@@ -106,7 +116,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         const mockFetch = global.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async (url: string) => {
-            if (url.includes('/dashboard/repos')) {
+            if (url.includes('/repos/')) {
                 // Return exactly the payload the backend produces for repositories
                 return {
                     ok: true,
@@ -124,6 +134,12 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
                         drift_events_count: 3,
                         pr_waiting_count: 1,
                     })
+                }
+            }
+            if (url.includes('/notifications')) {
+                return {
+                    ok: true,
+                    json: async () => []
                 }
             }
             return { ok: true, json: async () => ({}) }
