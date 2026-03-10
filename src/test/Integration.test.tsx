@@ -111,7 +111,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
                 return {
                     ok: true,
                     json: async () => [
-                        { id: 'repo-abc', name: 'org/backend-service', language: 'Python', stargazers_count: 99, forks_count: 10 }
+                        { id: 1, name: 'org/backend-service', language: 'Python', stargazers_count: 99, forks_count: 10, description: 'Test', avatar_url: '' }
                     ]
                 }
             }
@@ -129,18 +129,22 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
             return { ok: true, json: async () => ({}) }
         })
 
+        // We must wrap the render in act/waitFor to allow the QueryClient to digest the Promises
         renderWithProviders(<Dashboard />)
 
         // Give the react-query cache time to fulfill the Promises and trigger a re-render
+        // Testing-library requires targeting something that actually appears in the DOM
+        await waitFor(() => {
+            expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument()
+        })
+        
         await waitFor(() => {
             // Verify the component successfully mapped the API data into physical DOM nodes
             expect(screen.getByText('org/backend-service')).toBeInTheDocument()
             expect(screen.getByText('Python')).toBeInTheDocument()
             expect(screen.getByText('99')).toBeInTheDocument()
+            expect(screen.queryByText(/No repositories linked yet/i)).not.toBeInTheDocument()
         })
-        
-        // Ensure the empty state completely disappears when data is present
-        expect(screen.queryByText(/No repositories linked yet/i)).not.toBeInTheDocument()
     })
 
     it('Scenario 3: Conditionally disables UI features and shows skeletons when the Backend returns a 500 error', async () => {
