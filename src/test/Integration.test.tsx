@@ -61,7 +61,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         const mockFetch = global.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async (url: string) => {
-            if (url.includes('/api/repos/')) {
+            if (url.includes('/dashboard/repos')) {
                 return {
                     ok: true,
                     json: async () => [] // Zero repositories
@@ -98,15 +98,15 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         expect(zeroes.length).toBeGreaterThanOrEqual(4)
         
         // Verify that the React application natively dispatched API requests to the expected endpoints
-        expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/api/repos/'), expect.anything())
-        expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/api/dashboard/stats'), expect.anything())
+        expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/dashboard/repos'), expect.anything())
+        expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/dashboard/stats'), expect.anything())
     })
 
     it('Scenario 2: Renders a populated layout when the backend API successfully fetches linked repositories', async () => {
         const mockFetch = global.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async (url: string) => {
-            if (url.includes('/api/repos/')) {
+            if (url.includes('/dashboard/repos')) {
                 // Return exactly the payload the backend produces for repositories
                 return {
                     ok: true,
