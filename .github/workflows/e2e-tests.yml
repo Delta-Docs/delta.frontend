@@ -11,6 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: delta_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis
         ports:
@@ -45,9 +57,7 @@ jobs:
         run: |
           cd delta.backend
           cp .env.example .env
-          # Use SQLite for easy CI testing if possible, or just point to a local test db
-          # For now, we assume the backend can start with .env.example defaults or we override them
-          sed -i 's|POSTGRES_CONNECTION_URL=.*|POSTGRES_CONNECTION_URL="sqlite:///./test.db"|' .env
+          sed -i 's|POSTGRES_CONNECTION_URL=.*|POSTGRES_CONNECTION_URL="postgresql://postgres:password@localhost:5432/delta_test"|' .env
           sed -i 's|REDIS_URL=.*|REDIS_URL="redis://localhost:6379/0"|' .env
           
       - name: Run Backend Migrations
