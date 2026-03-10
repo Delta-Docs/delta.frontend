@@ -10,7 +10,8 @@ export interface Repository {
     avatar_url: string | null
     docs_root_path: string
     target_branch: string
-    drift_sensitivity: number
+    reviewer_github_id: string | null
+    docs_policies: string | null
     style_preference: string
     file_ignore_patterns: string[] | null
     last_synced_at: string | null
@@ -18,7 +19,8 @@ export interface Repository {
 }
 
 export interface RepositorySettings {
-    drift_sensitivity?: number
+    reviewer_github_id?: string | null
+    docs_policies?: string | null
     style_preference?: string
     target_branch?: string
     docs_root_path?: string

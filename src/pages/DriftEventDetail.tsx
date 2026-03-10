@@ -44,43 +44,65 @@ const WORKFLOW_PHASES: ProcessingPhase[] = [
   'analyzing',
   'generating',
   'verifying',
-  'completed',
+  'pr_raised',
+  'pr_merged',
 ]
 
-function WorkflowProgress({ currentPhase }: { currentPhase: ProcessingPhase }) {
-  const currentIndex = WORKFLOW_PHASES.indexOf(currentPhase)
+const PHASE_LABELS: Record<string, string> = {
+  queued: 'Queue',
+  scouting: 'Scout',
+  analyzing: 'Analyze',
+  generating: 'Generate',
+  verifying: 'Verify',
+  pr_raised: 'PR Raised',
+  pr_merged: 'PR Merged',
+}
+
+function WorkflowProgress({ currentPhase, driftResult }: { currentPhase: ProcessingPhase, driftResult?: string }) {
+  let currentIndex = WORKFLOW_PHASES.indexOf(currentPhase)
+
+  if (currentPhase === 'completed') {
+    // Handle legacy backend state
+    currentIndex = driftResult === 'clean' ? 3 : 7 // stop after analyzing if clean, else treat as fully complete
+  }
+
   const isFailed = currentPhase === 'failed'
 
   return (
-    <div className="flex items-center gap-1 w-full">
-      {WORKFLOW_PHASES.map((phase, idx) => {
-        const isCompleted = idx < currentIndex
-        const isCurrent = phase === currentPhase
-        const isGenerating = phase === 'generating' || phase === 'verifying'
+    <div className="flex items-center gap-1 w-full flex-wrap sm:flex-nowrap">
+      {WORKFLOW_PHASES.map((phase, i) => {
+        let isCompleted = false
+        let isCurrent = false
 
-        // Skip generating/verifying display if we went straight to completed without drift
-        if (isGenerating && currentPhase === 'completed' && currentIndex <= 3) {
-          return null
+        if (currentPhase === 'completed') {
+          isCompleted = i < currentIndex
+          isCurrent = false
+        } else {
+          isCompleted = i < currentIndex || currentPhase === 'pr_merged'
+          isCurrent = phase === currentPhase
         }
 
         return (
-          <div key={phase} className="flex items-center flex-1">
-            <div
-              className={`
-                flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all
-                ${isCompleted ? 'bg-green-500 text-white' : ''}
-                ${isCurrent && !isFailed ? 'bg-blue-500 text-white animate-pulse' : ''}
-                ${isCurrent && isFailed ? 'bg-red-500 text-white' : ''}
-                ${!isCompleted && !isCurrent ? 'bg-gray-200 text-gray-500' : ''}
-              `}
-            >
-              {isCompleted ? '✓' : idx + 1}
-            </div>
-            {idx < WORKFLOW_PHASES.length - 1 && (
+          <div key={phase} className={`flex items-center ${i < WORKFLOW_PHASES.length - 1 ? 'flex-1' : ''}`}>
+            <div className="flex flex-col items-center gap-1">
               <div
-                className={`flex-1 h-1 mx-1 rounded ${
-                  isCompleted ? 'bg-green-500' : 'bg-gray-200'
-                }`}
+                className={`
+                  flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all shrink-0
+                  ${isCompleted ? 'bg-green-500 text-white' : ''}
+                  ${isCurrent && !isFailed ? 'bg-blue-500 text-white animate-pulse' : ''}
+                  ${isCurrent && isFailed ? 'bg-red-500 text-white' : ''}
+                  ${!isCompleted && !isCurrent ? 'bg-gray-200 text-gray-500' : ''}
+                `}
+              >
+                {isCompleted ? '✓' : i + 1}
+              </div>
+              <span className={`text-[10px] font-medium ${isCompleted || isCurrent ? 'text-white/90' : 'text-white/40'} whitespace-nowrap`}>
+                {PHASE_LABELS[phase]}
+              </span>
+            </div>
+            {i < WORKFLOW_PHASES.length - 1 && (
+              <div
+                className={`flex-1 min-w-[12px] h-1 mx-1 sm:mx-2 rounded self-start mt-4 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}
               />
             )}
           </div>
@@ -105,7 +127,7 @@ function FindingCard({ finding }: { finding: DriftFinding }) {
 
   return (
     <AccordionItem value={finding.id} className="border-white/10 w-full">
-      <AccordionTrigger className="hover:no-underline py-4 px-4 hover:bg-white/5 transition-colors w-full">  
+      <AccordionTrigger className="hover:no-underline py-4 px-4 hover:bg-white/5 transition-colors w-full">
         <div className="flex items-center gap-4 flex-1 min-w-0 text-left">
           <FileCode className="size-5 text-blue-400 shrink-0" />
           <div className="flex-1 min-w-0 flex items-center gap-3 flex-wrap">
@@ -113,9 +135,8 @@ function FindingCard({ finding }: { finding: DriftFinding }) {
               <code className="text-sm font-mono text-white">{finding.code_path}</code>
               {finding.change_type && (
                 <span
-                  className={`text-xs px-2 py-1 rounded font-medium ${
-                    changeTypeColors[finding.change_type] || 'bg-gray-100'
-                  }`}
+                  className={`text-xs px-2 py-1 rounded font-medium ${changeTypeColors[finding.change_type] || 'bg-gray-100'
+                    }`}
                 >
                   {finding.change_type}
                 </span>
@@ -184,10 +205,9 @@ function CodeChangesList({ changes }: { changes: CodeChange[] }) {
             <div className="space-y-1.5">
               {codeFiles.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-xs pl-1">
-                  <span className={`font-bold shrink-0 ${
-                    file.change_type === 'added' ? 'text-green-400' :
+                  <span className={`font-bold shrink-0 ${file.change_type === 'added' ? 'text-green-400' :
                     file.change_type === 'deleted' ? 'text-red-400' : 'text-amber-400'
-                  }`}>
+                    }`}>
                     {file.change_type === 'added' ? '+' : file.change_type === 'deleted' ? '-' : '~'}
                   </span>
                   <span className="font-mono text-white/80 break-all">{file.file_path}</span>
@@ -206,10 +226,9 @@ function CodeChangesList({ changes }: { changes: CodeChange[] }) {
             <div className="space-y-1.5">
               {docFiles.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-xs pl-1">
-                  <span className={`font-bold shrink-0 ${
-                    file.change_type === 'added' ? 'text-green-400' :
+                  <span className={`font-bold shrink-0 ${file.change_type === 'added' ? 'text-green-400' :
                     file.change_type === 'deleted' ? 'text-red-400' : 'text-amber-400'
-                  }`}>
+                    }`}>
                     {file.change_type === 'added' ? '+' : file.change_type === 'deleted' ? '-' : '~'}
                   </span>
                   <span className="font-mono text-cyan-300 break-all">{file.file_path}</span>
@@ -360,7 +379,7 @@ export default function DriftEventDetail() {
             ]}
             className="mb-4"
           />
-          
+
           {/* Page Header */}
           <div className="dashboard-greeting">
             <div className="flex items-center justify-between">
@@ -421,7 +440,7 @@ export default function DriftEventDetail() {
               <section className="stat-tile">
                 <div className="w-full space-y-4">
                   <h3 className="font-semibold text-lg">Analysis Progress</h3>
-                  <WorkflowProgress currentPhase={event.processing_phase} />
+                  <WorkflowProgress currentPhase={event.processing_phase} driftResult={event.drift_result} />
                   <div className="flex items-center justify-between text-sm">
                     <span className="opacity-70">
                       {event.started_at
@@ -453,7 +472,7 @@ export default function DriftEventDetail() {
                     <Skeleton className="h-20 w-full" />
                   </div>
                 ) : findings && findings.length > 0 ? (
-                  <Accordion type="multiple" className="stat-tile p-0! overflow-hidden w-full">
+                  <Accordion type="multiple" className="stat-tile p-0! overflow-hidden w-full flex-col block">
                     {findings.map((finding) => (
                       <FindingCard key={finding.id} finding={finding} />
                     ))}

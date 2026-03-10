@@ -269,7 +269,7 @@ export default function DriftEvents() {
             ]}
             className="mb-4"
           />
-          
+
           {/* Page Header */}
           <div className="dashboard-greeting">
             <div className="flex items-center justify-between">
@@ -321,15 +321,15 @@ export default function DriftEvents() {
               <TabsList>
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="in-progress">In Progress</TabsTrigger>
-                <TabsTrigger value="completed">Completed</TabsTrigger>
+                <TabsTrigger value="completed">Analysis Completed</TabsTrigger>
                 <TabsTrigger value="failed">Failed</TabsTrigger>
               </TabsList>
             </Tabs>
 
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => refetch()} 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => refetch()}
               disabled={isLoading}
               className="hover:bg-white/10 text-white disabled:opacity-50"
               title="Refresh"

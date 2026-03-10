@@ -53,7 +53,8 @@ export default function RepoSettings() {
     // Local state for form inputs
     const [docsPath, setDocsPath] = useState('')
     const [defaultBranch, setDefaultBranch] = useState('')
-    const [driftSensitivity, setDriftSensitivity] = useState(0.5)
+    const [reviewerGithubId, setReviewerGithubId] = useState('')
+    const [docsPolicies, setDocsPolicies] = useState('')
     const [stylePreference, setStylePreference] = useState('professional')
     const [ignorePatterns, setIgnorePatterns] = useState('')
 
@@ -62,9 +63,10 @@ export default function RepoSettings() {
         if (repo) {
             setDocsPath(repo.docs_root_path || '/docs')
             setDefaultBranch(repo.target_branch || 'main')
-            setDriftSensitivity(repo.drift_sensitivity || 0.5)
+            setReviewerGithubId(repo.reviewer_github_id || '')
+            setDocsPolicies(repo.docs_policies || '')
             setStylePreference(repo.style_preference || 'professional')
-            setIgnorePatterns(repo.file_ignore_patterns?.join('\n') || '')
+            setIgnorePatterns(repo.file_ignore_patterns?.join(', ') || '')
         }
     }, [repo])
 
@@ -79,14 +81,15 @@ export default function RepoSettings() {
     // Save Settings Handler
     const handleSave = () => {
         const patterns = ignorePatterns.trim()
-            ? ignorePatterns.split('\n').map(p => p.trim()).filter(Boolean)
+            ? ignorePatterns.split(',').map(p => p.trim()).filter(Boolean)
             : null
         updateSettings.mutate({
             id: repo!.id,
             settings: {
                 docs_root_path: docsPath,
                 target_branch: defaultBranch,
-                drift_sensitivity: Number(driftSensitivity),
+                reviewer_github_id: reviewerGithubId || null,
+                docs_policies: docsPolicies || null,
                 style_preference: stylePreference,
                 file_ignore_patterns: patterns
             }
@@ -208,7 +211,7 @@ export default function RepoSettings() {
                         ]}
                         className="mb-4"
                     />
-                    
+
                     {/* Page Header */}
                     <div className="dashboard-greeting mb-6">
                         <div className="flex items-center justify-between">
@@ -271,7 +274,7 @@ export default function RepoSettings() {
                             <div className="stat-tile">
                                 <div className="w-full space-y-4">
                                     <h3 className="text-white font-semibold border-b border-white/10 pb-2">Documentation Automation</h3>
-                                    
+
                                     {/* Path and Branch Settings */}
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         <div className="space-y-1.5">
@@ -301,29 +304,19 @@ export default function RepoSettings() {
 
                                     {/* Sensitivity and Style */}
                                     <div className="grid gap-4 sm:grid-cols-2">
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <Label htmlFor="drift-sensitivity" className="text-white text-sm">Drift Sensitivity</Label>
-                                                <span className="text-xs font-mono bg-white/10 text-white px-2 py-0.5 rounded-full">
-                                                    {(driftSensitivity * 100).toFixed(0)}%
-                                                </span>
-                                            </div>
-                                            <input
-                                                id="drift-sensitivity"
-                                                type="range"
-                                                min="0"
-                                                max="1"
-                                                step="0.01"
-                                                value={driftSensitivity}
-                                                onChange={(e) => setDriftSensitivity(Number(e.target.value))}
-                                                className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-ocean-city"
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="reviewer-github-id" className="text-white text-sm">Reviewer GitHub ID</Label>
+                                            <Input
+                                                id="reviewer-github-id"
+                                                value={reviewerGithubId}
+                                                onChange={(e) => setReviewerGithubId(e.target.value)}
+                                                placeholder="github_username"
+                                                className="bg-deep-navy/50 border-white/20 text-white placeholder:text-white/40 h-8 font-mono"
                                             />
-                                            <div className="flex justify-between text-[10px] text-white/50">
-                                                <span>Low</span>
-                                                <span>Medium</span>
-                                                <span>High</span>
-                                            </div>
+                                            <p className="text-[11px] text-white/50">GitHub user to assign as reviewer.</p>
                                         </div>
+
+
 
                                         <div className="space-y-1.5">
                                             <Label htmlFor="style-preference" className="text-white text-sm">Style Preference</Label>
@@ -342,19 +335,33 @@ export default function RepoSettings() {
                                         </div>
                                     </div>
 
+                                    {/* Document Policies */}
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="docs-policies" className="text-white text-sm">Document Policies</Label>
+                                        <Input
+                                            id="docs-policies"
+                                            value={docsPolicies}
+                                            onChange={(e) => setDocsPolicies(e.target.value)}
+                                            placeholder="e.g. Always include a changelog..."
+                                            className="bg-deep-navy/50 border-white/20 text-white placeholder:text-white/40 h-8 font-mono"
+                                        />
+                                        <p className="text-[11px] text-white/50">
+                                            Custom instructions for documentation generation.
+                                        </p>
+                                    </div>
+
                                     {/* File Ignore Patterns */}
                                     <div className="space-y-1.5">
                                         <Label htmlFor="ignore-patterns" className="text-white text-sm">File Ignore Patterns</Label>
-                                        <textarea
+                                        <Input
                                             id="ignore-patterns"
                                             value={ignorePatterns}
                                             onChange={(e) => setIgnorePatterns(e.target.value)}
-                                            placeholder="node_modules/**&#10;*.min.js"
-                                            rows={2}
-                                            className="flex w-full rounded-md border border-white/20 bg-deep-navy/50 px-3 py-2 text-sm text-white placeholder:text-white/40 font-mono resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ocean-city"
+                                            placeholder="node_modules/**, *.min.js"
+                                            className="bg-deep-navy/50 border-white/20 text-white placeholder:text-white/40 h-8 font-mono"
                                         />
                                         <p className="text-[11px] text-white/50">
-                                            One pattern per line. Supports glob patterns.
+                                            Comma-separated. Supports glob patterns.
                                         </p>
                                     </div>
 
@@ -381,30 +388,30 @@ export default function RepoSettings() {
 
                         {/* Right Column - Recent Events */}
                         <div className="lg:col-span-1">
-                            <div className="stat-tile p-0! overflow-hidden h-full flex flex-col">
-                                <div className="flex items-center justify-between p-4 border-b border-white/10">
+                            <div className="stat-tile p-0! overflow-hidden h-full flex flex-col w-full items-stretch!">
+                                <div className="flex items-center justify-between p-4 border-b border-white/10 w-full">
                                     <h3 className="text-white font-semibold">Recent Events</h3>
                                     <Button variant="ghost" size="sm" asChild className="text-white/70 hover:text-white -mr-2">
-                                        <Link to={`/repos/${repoId}/events`}>
+                                        <Link to={`/repos/${repoId}/events`} className="hover:no-underline">
                                             View All
                                             <CaretRight className="size-4 ml-1" />
                                         </Link>
                                     </Button>
                                 </div>
-                                <div className="flex-1">
+                                <div className="flex-1 w-full">
                                     {driftEventsLoading ? (
-                                        <div className="p-4 space-y-3">
+                                        <div className="p-4 space-y-3 w-full">
                                             <Skeleton className="h-10 w-full" />
                                             <Skeleton className="h-10 w-full" />
                                             <Skeleton className="h-10 w-full" />
                                         </div>
                                     ) : driftEvents && driftEvents.length > 0 ? (
-                                        <div className="divide-y divide-white/10">
+                                        <div className="divide-y divide-white/10 w-full">
                                             {driftEvents.slice(0, 4).map((event) => (
                                                 <Link
                                                     key={event.id}
                                                     to={`/repos/${repoId}/events/${event.id}`}
-                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors"
+                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors hover:no-underline w-full"
                                                 >
                                                     {getResultIcon(event.drift_result)}
                                                     <div className="flex-1 min-w-0">
@@ -421,7 +428,7 @@ export default function RepoSettings() {
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="p-6 text-center flex-1 flex flex-col items-center justify-center">
+                                        <div className="p-6 text-center flex-1 flex flex-col items-center justify-center w-full">
                                             <GitPullRequest className="size-8 mx-auto mb-2 text-white/30" />
                                             <p className="text-sm text-white/60">No drift events yet</p>
                                             <p className="text-xs text-white/40 mt-1">

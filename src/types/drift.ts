@@ -5,6 +5,8 @@ export type ProcessingPhase =
   | 'analyzing'
   | 'generating'
   | 'verifying'
+  | 'pr_raised'
+  | 'pr_merged'
   | 'completed'
   | 'failed'
 
@@ -77,7 +79,7 @@ export interface CodeChange {
 
 // Helper to check if event is in progress
 export function isEventInProgress(phase: ProcessingPhase): boolean {
-  return !['completed', 'failed'].includes(phase)
+  return !['completed', 'failed', 'pr_raised', 'pr_merged'].includes(phase)
 }
 
 // Helper to get phase display info
@@ -88,7 +90,9 @@ export function getPhaseInfo(phase: ProcessingPhase): { label: string; icon: str
     analyzing: { label: 'Analyzing', icon: '🤖' },
     generating: { label: 'Generating', icon: '✍️' },
     verifying: { label: 'Verifying', icon: '✅' },
-    completed: { label: 'Completed', icon: '✓' },
+    pr_raised: { label: 'PR Raised', icon: '↗️' },
+    pr_merged: { label: 'PR Merged', icon: '🛣️' },
+    completed: { label: 'Analysis Completed', icon: '✓' },
     failed: { label: 'Failed', icon: '✗' },
   }
   return phaseMap[phase]

@@ -9,13 +9,15 @@ interface StatusBadgeProps {
 
 // Phase styling
 const phaseStyles: Record<ProcessingPhase, string> = {
-  queued: 'bg-gray-500/20 text-gray-300 border-gray-500',
-  scouting: 'bg-blue-500/20 text-blue-300 border-blue-400 animate-pulse',
-  analyzing: 'bg-blue-500/20 text-blue-300 border-blue-400 animate-pulse',
-  generating: 'bg-amber-500/20 text-amber-300 border-amber-400 animate-pulse',
-  verifying: 'bg-cyan-500/20 text-cyan-300 border-cyan-400 animate-pulse',
-  completed: 'bg-green-500/20 text-green-300 border-green-400',
-  failed: 'bg-red-500/20 text-red-300 border-red-400',
+  queued: 'bg-gray-500 text-white border-gray-600',
+  scouting: 'bg-blue-500 text-white border-blue-600 animate-pulse',
+  analyzing: 'bg-blue-500 text-white border-blue-600 animate-pulse',
+  generating: 'bg-amber-500 text-white border-amber-600 animate-pulse',
+  verifying: 'bg-cyan-600 text-white border-cyan-700 animate-pulse',
+  pr_raised: 'bg-indigo-500 text-white border-indigo-600',
+  pr_merged: 'bg-purple-500 text-white border-purple-600',
+  completed: 'bg-green-500 text-white border-green-600',
+  failed: 'bg-red-500 text-white border-red-600',
 }
 
 // Result styling
@@ -34,7 +36,9 @@ const phaseLabels: Record<ProcessingPhase, string> = {
   analyzing: 'Analyzing',
   generating: 'Generating',
   verifying: 'Verifying',
-  completed: 'Completed',
+  pr_raised: 'PR Raised',
+  pr_merged: 'PR Merged',
+  completed: 'Analysis Completed',
   failed: 'Failed',
 }
 
@@ -47,13 +51,15 @@ const resultLabels: Record<DriftResult, string> = {
 }
 
 export function StatusBadge({ status, size = 'md', className }: StatusBadgeProps) {
+  if (status === 'clean') return null
+
   // Determine if it's a phase or result
   const isPhase = status in phaseStyles
   const styles = isPhase ? phaseStyles[status as ProcessingPhase] : resultStyles[status as DriftResult]
   const label = isPhase ? phaseLabels[status as ProcessingPhase] : resultLabels[status as DriftResult]
-  
-  const sizeClasses = size === 'sm' 
-    ? 'text-xs px-2 py-0.5' 
+
+  const sizeClasses = size === 'sm'
+    ? 'text-xs px-2 py-0.5'
     : 'text-sm px-2.5 py-1'
 
   return (
