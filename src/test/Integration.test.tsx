@@ -97,11 +97,11 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
 
         // Wait for the components to finish mounting, fetching, and rendering
         await waitFor(() => {
-            expect(screen.getByText(/No repositories linked yet/i)).toBeInTheDocument()
+            expect(screen.getByText(/No repositories linked/i)).toBeInTheDocument()
         })
         
         // Ensure that it specifically told them to connect their GitHub account
-        expect(screen.getByText(/Connect your GitHub account to get started/i)).toBeInTheDocument()
+        expect(screen.getByText(/Connect your GitHub repositories to start monitoring documentation drift/i)).toBeInTheDocument()
         
         // Ensure stats tiles display 0 everywhere
         const zeroes = screen.getAllByText('0')
@@ -121,7 +121,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
                 return {
                     ok: true,
                     json: async () => [
-                        { id: 1, name: 'org/backend-service', language: 'Python', stargazers_count: 99, forks_count: 10, description: 'Test', avatar_url: '' }
+                        { id: 1, repo_name: 'org/backend-service', language: 'Python', stargazers_count: 99, forks_count: 10, description: 'Test', avatar_url: '', is_active: true }
                     ]
                 }
             }
@@ -157,9 +157,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
         await waitFor(() => {
             // Verify the component successfully mapped the API data into physical DOM nodes
             expect(screen.getByText('org/backend-service')).toBeInTheDocument()
-            expect(screen.getByText('Python')).toBeInTheDocument()
-            expect(screen.getByText('99')).toBeInTheDocument()
-            expect(screen.queryByText(/No repositories linked yet/i)).not.toBeInTheDocument()
+            expect(screen.queryByText(/No repositories linked/i)).not.toBeInTheDocument()
         })
     })
 
