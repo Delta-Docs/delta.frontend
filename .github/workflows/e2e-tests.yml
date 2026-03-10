@@ -69,7 +69,8 @@ jobs:
         run: |
           cd delta.backend
           python scripts/seed_db.py
-          
+        env:
+          PYTHONPATH: .          
       - name: Start Backend Server
         run: |
           cd delta.backend
