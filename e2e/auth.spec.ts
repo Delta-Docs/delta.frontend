@@ -19,7 +19,7 @@ test.describe('Authentication Flow', () => {
 
     // Verify redirection to the dashboard
     await expect(page).toHaveURL(/\/dashboard/);
-    
+
     // Verify dashboard elements are visible indicating successful login
     // Note: The seeded user full_name is "Test User"
     await expect(page.getByText('Test User')).toBeVisible();
