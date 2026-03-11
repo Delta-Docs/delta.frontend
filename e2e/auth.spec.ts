@@ -7,7 +7,8 @@ test.describe('Authentication Flow', () => {
 
     // Verify we are on the login page
     await expect(page).toHaveTitle(/Delta|Login/);
-    await expect(page.locator('h1')).toContainText('Login');
+    await expect(page.locator('h1')).toContainText('Delta.');
+    await expect(page.getByText('Sign In')).toBeVisible();
 
     // Fill in the login form. 
     // We use the test credentials seeded in the database.
