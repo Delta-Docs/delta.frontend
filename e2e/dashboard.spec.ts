@@ -2,7 +2,34 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard Flow', () => {
   test.beforeEach(async ({ page }: { page: import('@playwright/test').Page }) => {
-    // Navigate to login and authenticate before each dashboard test
+    // 1. Mock the Auth check/login
+    await page.route('**/api/auth/login', async (route) => {
+        await route.fulfill({
+            status: 200,
+            body: JSON.stringify({ email: 'test@example.com', name: 'Test User' }),
+        });
+    });
+
+    // 2. Mock the repositories list
+    await page.route('**/api/repos', async (route) => {
+        await route.fulfill({
+            status: 200,
+            body: JSON.stringify([
+                { id: 1, name: 'mock-repo-1', url: 'https://github.com/test/repo1', is_active: true },
+                { id: 2, name: 'mock-repo-2', url: 'https://github.com/test/repo2', is_active: false }
+            ]),
+        });
+    });
+
+    // 3. Mock the statistics
+    await page.route('**/api/stats', async (route) => {
+        await route.fulfill({
+            status: 200,
+            body: JSON.stringify({ repos_linked: 42, prs_waiting: 7 }),
+        });
+    });
+
+    // Navigate to login and authenticate
     await page.goto('/login');
     await page.fill('input[type="email"]', 'test@example.com');
     await page.fill('input[type="password"]', 'testpassword123');

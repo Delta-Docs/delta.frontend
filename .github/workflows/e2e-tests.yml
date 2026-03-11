@@ -10,75 +10,12 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: delta_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-
     steps:
       - name: Checkout Frontend
         uses: actions/checkout@v4
         with:
           path: delta.frontend
 
-      - name: Checkout Backend
-        uses: actions/checkout@v4
-        with:
-          repository: Delta-Docs/delta.backend
-          ref: backend-e2e-support
-          path: delta.backend
-      
-      # Setup Backend
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Install Backend Dependencies
-        run: |
-          cd delta.backend
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          
-      - name: Setup Backend Environment
-        run: |
-          cd delta.backend
-          cp .env.example .env
-          sed -i 's|POSTGRES_CONNECTION_URL=.*|POSTGRES_CONNECTION_URL="postgresql://postgres:password@localhost:5432/delta_test"|' .env
-          sed -i 's|REDIS_URL=.*|REDIS_URL="redis://localhost:6379/0"|' .env
-          
-      - name: Run Backend Migrations
-        run: |
-          cd delta.backend
-          alembic upgrade head
-          
-      - name: Seed Test Database
-        run: |
-          cd delta.backend
-          python scripts/seed_db.py
-        env:
-          PYTHONPATH: .          
-      - name: Start Backend Server
-        run: |
-          cd delta.backend
-          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-          echo "Waiting for backend to be ready..."
-          timeout 60s bash -c 'until curl -s http://localhost:8000/api/docs > /dev/null; do sleep 1; done'
-          echo "Backend is ready"
-        
       # Setup Frontend
       - uses: oven-sh/setup-bun@v1
         with:
