@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Flow', () => {
   test.beforeEach(async ({ page }) => {
-    // Mock the login API to return success immediately
+    // Mock the login API with correct nested structure
     await page.route('**/api/auth/login', async (route) => {
       await route.fulfill({
         status: 200,
@@ -10,14 +10,16 @@ test.describe('Authentication Flow', () => {
         body: JSON.stringify({
           access_token: 'mock-token',
           token_type: 'bearer',
-          email: 'test@example.com',
-          name: 'Test User'
+          user: {
+            email: 'test@example.com',
+            full_name: 'Test User'
+          }
         }),
       });
     });
   });
 
-  test('User can log in successfully and be redirected to dashboard', async ({ page }: { page: import('@playwright/test').Page }) => {
+  test('User can log in successfully and be redirected to dashboard', async ({ page }) => {
     // Navigate to the login page
     await page.goto('/login');
 
@@ -36,6 +38,8 @@ test.describe('Authentication Flow', () => {
     await expect(page).toHaveURL(/\/dashboard/);
 
     // Verify dashboard elements are visible indicating successful login
-    await expect(page.getByText('Test User')).toBeVisible();
+    // Using regex for more robust matching of "Welcome back, Test"
+    await expect(page.getByText(/Welcome back/)).toBeVisible();
+    await expect(page.locator('.dashboard-user-name')).toContainText('Test User');
   });
 });

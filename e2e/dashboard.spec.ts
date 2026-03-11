@@ -1,31 +1,48 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard Flow', () => {
-  test.beforeEach(async ({ page }: { page: import('@playwright/test').Page }) => {
-    // 1. Mock the Auth check/login
+  test.beforeEach(async ({ page }) => {
+    // 1. Mock the Auth login
     await page.route('**/api/auth/login', async (route) => {
         await route.fulfill({
             status: 200,
-            body: JSON.stringify({ email: 'test@example.com', name: 'Test User' }),
+            contentType: 'application/json',
+            body: JSON.stringify({ 
+                access_token: 'mock-token',
+                token_type: 'bearer',
+                user: { email: 'test@example.com', full_name: 'Test User' } 
+            }),
         });
     });
 
-    // 2. Mock the repositories list
-    await page.route('**/api/repos', async (route) => {
+    // 2. Mock the repositories list (endpoint is /repos/ according to useRepos.ts)
+    await page.route('**/api/repos/**', async (route) => {
         await route.fulfill({
             status: 200,
+            contentType: 'application/json',
             body: JSON.stringify([
-                { id: 1, name: 'mock-repo-1', url: 'https://github.com/test/repo1', is_active: true },
-                { id: 2, name: 'mock-repo-2', url: 'https://github.com/test/repo2', is_active: false }
+                { 
+                    id: '1', 
+                    repo_name: 'mock-repo-1', 
+                    is_active: true,
+                    avatar_url: null,
+                    created_at: new Date().toISOString()
+                }
             ]),
         });
     });
 
-    // 3. Mock the statistics
-    await page.route('**/api/stats', async (route) => {
+    // 3. Mock the statistics (/dashboard/stats)
+    await page.route('**/api/dashboard/stats', async (route) => {
         await route.fulfill({
             status: 200,
-            body: JSON.stringify({ repos_linked: 42, prs_waiting: 7 }),
+            contentType: 'application/json',
+            body: JSON.stringify({ 
+                installations_count: 1,
+                repos_linked_count: 5,
+                drift_events_count: 12,
+                pr_waiting_count: 2
+            }),
         });
     });
 
@@ -37,12 +54,10 @@ test.describe('Dashboard Flow', () => {
     await expect(page).toHaveURL(/\/dashboard/);
   });
 
-  test('User can view the dashboard and interact with repositories', async ({ page }: { page: import('@playwright/test').Page }) => {
+  test('User can view the dashboard and interact with repositories', async ({ page }) => {
     // Verify key UI components of the dashboard are present
-    await expect(page.getByText('Welcome back')).toBeVisible();
-    
-    // Wait for the repositories to load (either empty state or actual repos)
-    const repoList = page.locator('.repo-row'); // Container for repos
+    await expect(page.getByText(/Welcome back/)).toBeVisible();
+    await expect(page.getByText('mock-repo-1')).toBeVisible();
     
     // Check if the page has finished loading by looking for stats tiles
     await expect(page.getByText('Repos Linked')).toBeVisible();
