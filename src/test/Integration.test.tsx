@@ -6,7 +6,7 @@ import Dashboard from '../pages/Dashboard'
 
 // Keep actual React functions intact, but override standard environment behaviors to prevent
 // components from crashing due to missing configurations on test mount
-const originalFetch = global.fetch
+const originalFetch = globalThis.fetch
 
 const createTestQueryClient = () => new QueryClient({
     defaultOptions: {
@@ -24,7 +24,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
 
     beforeEach(() => {
         // Reset fetch to a mock and create a fresh query client cache
-        global.fetch = vi.fn()
+        globalThis.fetch = vi.fn()
         queryClient = createTestQueryClient()
         
         // Mock a basic logged in user session by intercepting the /auth/me or similar query 
@@ -43,7 +43,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
 
     afterEach(() => {
         // Restore standard node behavior
-        global.fetch = originalFetch
+        globalThis.fetch = originalFetch
         vi.restoreAllMocks()
         queryClient.clear()
     })
@@ -61,7 +61,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
     it('Scenario 1: Renders the beautiful "Empty State" UI when the API returns perfectly empty data', async () => {
         // We configure the global fetch to return a 200 response with empty arrays/objects
         // exactly as the FastAPI backend would if the user had zero installations
-        const mockFetch = global.fetch as ReturnType<typeof vi.fn>
+        const mockFetch = globalThis.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async (url: string) => {
             if (url.includes('/repos/')) {
@@ -113,7 +113,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
     })
 
     it('Scenario 2: Renders a populated layout when the backend API successfully fetches linked repositories', async () => {
-        const mockFetch = global.fetch as ReturnType<typeof vi.fn>
+        const mockFetch = globalThis.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async (url: string) => {
             if (url.includes('/repos/')) {
@@ -162,7 +162,7 @@ describe('Dashboard - True Integration Test via Fetch Interception', () => {
     })
 
     it('Scenario 3: Conditionally disables UI features and shows skeletons when the Backend returns a 500 error', async () => {
-        const mockFetch = global.fetch as ReturnType<typeof vi.fn>
+        const mockFetch = globalThis.fetch as ReturnType<typeof vi.fn>
         
         mockFetch.mockImplementation(async () => {
             // Force the API to simulate an unhandled database crash
