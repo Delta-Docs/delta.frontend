@@ -13,6 +13,7 @@ import DriftEvents from '@/pages/DriftEvents'
 import DriftEventDetail from '@/pages/DriftEventDetail'
 import Notifications from '@/pages/Notifications'
 import NotFound from '@/pages/NotFound'
+import GithubCallback from '@/pages/GithubCallback'
 
 function App() {
   return (
@@ -39,6 +40,9 @@ function App() {
             </PublicRoute>
           }
         />
+
+        {/* GitHub OAuth Callback */}
+        <Route path="/github/callback" element={<GithubCallback />} />
 
         {/* Protected Routes - Require authentication */}
         <Route
